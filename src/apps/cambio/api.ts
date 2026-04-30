@@ -3,7 +3,9 @@ import { type ExchangeRates } from "./logic";
 
 const CACHE_KEY = "cambio-rates-cache";
 const CACHE_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
-const API_URL = "https://api.exchangerate-api.com/v4/latest/BRL";
+const API_URL =
+  process.env.EXPO_PUBLIC_EXCHANGE_API_URL ||
+  "https://api.exchangerate-api.com/v4/latest/BRL";
 
 interface CachedRates {
   rates: ExchangeRates;

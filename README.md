@@ -99,6 +99,21 @@ cd minhas-ferramentas
 npm install
 ```
 
+### Configurar variáveis de ambiente
+
+```bash
+# Copiar o template
+cp .env.example .env
+```
+
+O arquivo `.env.example` contém as variáveis necessárias com valores padrão:
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `EXPO_PUBLIC_EXCHANGE_API_URL` | `https://api.exchangerate-api.com/v4/latest/BRL` | URL da API de câmbio |
+
+> **Nota:** A API padrão é gratuita e não requer chave. Se quiser usar outro provider, basta alterar a URL no `.env`.
+
 ### Rodar o app
 
 ```bash
