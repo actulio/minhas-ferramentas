@@ -87,7 +87,7 @@ Para adicionar uma nova app, basta criar o módulo em `src/apps/` e registrá-lo
 ### Pré-requisitos
 
 - **Node.js** ≥ 18
-- **npm** ≥ 9
+- **pnpm** ≥ 9 (`npm install -g pnpm`)
 - **Expo CLI** (instalado via `npx`)
 - **Expo Go** no celular (iOS/Android) ou um emulador configurado
 
@@ -96,7 +96,7 @@ Para adicionar uma nova app, basta criar o módulo em `src/apps/` e registrá-lo
 ```bash
 # Clonar e instalar dependências
 cd minhas-ferramentas
-npm install
+pnpm install
 ```
 
 ### Configurar variáveis de ambiente
@@ -123,12 +123,12 @@ EXPO_PUBLIC_EXCHANGE_API_KEY=sua_chave_aqui
 
 ```bash
 # Iniciar o servidor de desenvolvimento
-npm start
+pnpm start
 
 # Ou diretamente para uma plataforma:
-npm run ios
-npm run android
-npm run web
+pnpm run ios
+pnpm run android
+pnpm run web
 ```
 
 Escaneie o QR code com o Expo Go ou pressione `i` (iOS) / `a` (Android) no terminal.
@@ -136,32 +136,32 @@ Escaneie o QR code com o Expo Go ou pressione `i` (iOS) / `a` (Android) no termi
 ### Rodar os testes
 
 ```bash
-# Rodar todos os testes (35 testes em 4 suites)
-npm test
+# Rodar todos os testes (37 testes em 4 suites)
+pnpm test
 
 # Com output detalhado
-npx jest --verbose
+pnpm exec jest --verbose
 
 # Rodar testes de uma app específica
-npx jest src/apps/juros-compostos/
-npx jest src/apps/pagamento/
-npx jest src/apps/cambio/
+pnpm exec jest src/apps/juros-compostos/
+pnpm exec jest src/apps/pagamento/
+pnpm exec jest src/apps/cambio/
 ```
 
 ### Linting e Formatação
 
 ```bash
 # Verificar erros de lint
-npm run lint
+pnpm run lint
 
 # Corrigir erros automaticamente
-npm run lint:fix
+pnpm run lint:fix
 
 # Formatar código com Prettier
-npm run format
+pnpm run format
 
 # Verificar formatação (CI)
-npm run format:check
+pnpm run format:check
 ```
 
 ### Verificação TypeScript
@@ -206,11 +206,11 @@ O app utiliza uma linguagem visual **midnight-blue com glassmorphism**:
 
 | Script | Comando | Descrição |
 |--------|---------|-----------|
-| `start` | `npm start` | Inicia o Expo dev server |
-| `ios` | `npm run ios` | Abre no simulador iOS |
-| `android` | `npm run android` | Abre no emulador Android |
-| `test` | `npm test` | Roda os testes com Jest |
-| `lint` | `npm run lint` | Verifica erros de lint |
-| `lint:fix` | `npm run lint:fix` | Corrige erros de lint |
-| `format` | `npm run format` | Formata com Prettier |
-| `format:check` | `npm run format:check` | Verifica formatação |
+| `start` | `pnpm start` | Inicia o Expo dev server |
+| `ios` | `pnpm run ios` | Abre no simulador iOS |
+| `android` | `pnpm run android` | Abre no emulador Android |
+| `test` | `pnpm test` | Roda os testes com Jest |
+| `lint` | `pnpm run lint` | Verifica erros de lint |
+| `lint:fix` | `pnpm run lint:fix` | Corrige erros de lint |
+| `format` | `pnpm run format` | Formata com Prettier |
+| `format:check` | `pnpm run format:check` | Verifica formatação |
