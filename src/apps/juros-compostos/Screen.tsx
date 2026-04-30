@@ -105,11 +105,19 @@ export default function JurosCompostosScreen() {
 
         {/* Result */}
         {result ? (
-          <ResultDisplay
-            label={result.label}
-            value={formatResult(result.value)}
-            unit={result.unit}
-          />
+          !isFinite(result.value) || isNaN(result.value) ? (
+            <GlassCard style={{ marginBottom: 16 }}>
+              <Text style={{ color: colors.warning, fontSize: 14, textAlign: 'center' }}>
+                Não é possível calcular com estes valores
+              </Text>
+            </GlassCard>
+          ) : (
+            <ResultDisplay
+              label={result.label}
+              value={formatResult(result.value)}
+              unit={result.unit}
+            />
+          )
         ) : null}
 
         {/* Input fields — hide the one being solved for */}

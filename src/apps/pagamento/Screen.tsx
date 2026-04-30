@@ -150,9 +150,9 @@ export default function PagamentoScreen() {
 
         {/* Inputs */}
         <GlassCard style={{ marginBottom: 16 }}>
-          <NumericInput label="Preço à vista (R$)" value={cashPrice} onChangeText={setCashPrice} placeholder="0,00" suffix="R$" />
-          <NumericInput label="Preço à prazo (R$)" value={installmentPrice} onChangeText={setInstallmentPrice} placeholder="0,00" suffix="R$" />
-          <NumericInput label="Nº de parcelas" value={installments} onChangeText={setInstallments} placeholder="0" />
+          <NumericInput label="Preço à vista (R$)" value={cashPrice} onChangeText={setCashPrice} placeholder="0,00" suffix="R$" error={parseFloat(cashPrice) < 0 ? 'Valor deve ser positivo' : undefined} />
+          <NumericInput label="Preço à prazo (R$)" value={installmentPrice} onChangeText={setInstallmentPrice} placeholder="0,00" suffix="R$" error={parseFloat(installmentPrice) < 0 ? 'Valor deve ser positivo' : undefined} />
+          <NumericInput label="Nº de parcelas" value={installments} onChangeText={setInstallments} placeholder="0" error={parseInt(installments, 10) < 0 ? 'Valor deve ser positivo' : undefined} />
           <NumericInput label="Rendimento mensal (%)" value={monthlyReturn} onChangeText={setMonthlyReturn} placeholder="0,8" suffix="%" />
           <NumericInput label="Cashback à prazo (%)" value={cashbackRate} onChangeText={setCashbackRate} placeholder="1,0" suffix="%" />
         </GlassCard>
