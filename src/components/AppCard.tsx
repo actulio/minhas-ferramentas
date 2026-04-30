@@ -5,12 +5,24 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { icons } from "lucide-react-native";
+import {
+  TrendingUp,
+  CreditCard,
+  ArrowLeftRight,
+  type LucideProps,
+} from "lucide-react-native";
 import { colors } from "@/theme/colors";
 import { useFavoritesStore } from "@/store/favorites";
 import { GlassCard } from "./GlassCard";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+/** Map of icon name → component. Add entries here when registering new mini-apps. */
+const iconMap: Record<string, React.ComponentType<LucideProps>> = {
+  TrendingUp,
+  CreditCard,
+  ArrowLeftRight,
+};
 
 interface AppCardProps {
   id: string;
@@ -35,12 +47,7 @@ export function AppCard({
     transform: [{ scale: scale.value }],
   }));
 
-  const LucideIcon = (
-    icons as Record<
-      string,
-      React.ComponentType<{ color: string; size: number }>
-    >
-  )[icon];
+  const LucideIcon = iconMap[icon];
 
   return (
     <AnimatedPressable
