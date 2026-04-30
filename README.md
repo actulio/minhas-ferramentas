@@ -106,13 +106,18 @@ npm install
 cp .env.example .env
 ```
 
-O arquivo `.env.example` contém as variáveis necessárias com valores padrão:
+O arquivo `.env.example` contém as variáveis necessárias:
 
-| Variável | Padrão | Descrição |
-|----------|--------|-----------|
-| `EXPO_PUBLIC_EXCHANGE_API_URL` | `https://api.exchangerate-api.com/v4/latest/BRL` | URL da API de câmbio |
+| Variável | Obrigatória | Descrição |
+|----------|-------------|-----------|
+| `EXPO_PUBLIC_EXCHANGE_API_KEY` | ✅ | Chave da [ExchangeRate-API](https://www.exchangerate-api.com/) (gratuita, 1500 req/mês) |
 
-> **Nota:** A API padrão é gratuita e não requer chave. Se quiser usar outro provider, basta alterar a URL no `.env`.
+```bash
+# Editar o .env com sua chave
+EXPO_PUBLIC_EXCHANGE_API_KEY=sua_chave_aqui
+```
+
+> **Nota:** Crie uma conta gratuita em [exchangerate-api.com](https://www.exchangerate-api.com/) para obter sua chave.
 
 ### Rodar o app
 

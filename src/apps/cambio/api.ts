@@ -3,9 +3,6 @@ import { type ExchangeRates } from "./logic";
 
 const CACHE_KEY = "cambio-rates-cache";
 const CACHE_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
-const API_URL =
-  process.env.EXPO_PUBLIC_EXCHANGE_API_URL ||
-  "https://api.exchangerate-api.com/v4/latest/BRL";
 
 interface CachedRates {
   rates: ExchangeRates;
@@ -19,17 +16,32 @@ export interface RatesResult {
   error?: string;
 }
 
+function getApiUrl(): string {
+  const key = process.env.EXPO_PUBLIC_EXCHANGE_API_KEY;
+  if (!key) {
+    throw new Error(
+      "EXPO_PUBLIC_EXCHANGE_API_KEY não configurada. Veja .env.example.",
+    );
+  }
+  return `https://v6.exchangerate-api.com/v6/${key}/latest/BRL`;
+}
+
 async function fetchFreshRates(): Promise<ExchangeRates> {
-  const response = await fetch(API_URL);
+  const url = getApiUrl();
+  const response = await fetch(url);
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const data = await response.json();
 
-  // API returns rates relative to BRL, e.g. { USD: 0.2 } means 1 BRL = 0.2 USD
-  // We want "1 USD = X BRL", so invert
+  if (data.result !== "success") {
+    throw new Error(data["error-type"] || "Erro na API de câmbio");
+  }
+
+  // v6 API returns conversion_rates relative to BRL
+  // e.g. { USD: 0.17 } means 1 BRL = 0.17 USD → we want 1 USD = X BRL, so invert
   return {
-    USD: 1 / data.rates.USD,
-    EUR: 1 / data.rates.EUR,
-    CHF: 1 / data.rates.CHF,
+    USD: 1 / data.conversion_rates.USD,
+    EUR: 1 / data.conversion_rates.EUR,
+    CHF: 1 / data.conversion_rates.CHF,
   };
 }
 
