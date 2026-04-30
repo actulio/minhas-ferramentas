@@ -1,9 +1,9 @@
-import React from 'react';
-import { Text } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '@/theme/colors';
-import { appRegistry } from '@/registry';
+import React from "react";
+import { Text } from "react-native";
+import { useLocalSearchParams, Stack } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { colors } from "@/theme/colors";
+import { appRegistry } from "@/registry";
 
 export default function MiniAppScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -11,8 +11,13 @@ export default function MiniAppScreen() {
 
   if (!app) {
     return (
-      <LinearGradient colors={[colors.bg.start, colors.bg.mid, colors.bg.end]} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: colors.text.secondary, fontSize: 16 }}>Ferramenta não encontrada</Text>
+      <LinearGradient
+        colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <Text style={{ color: colors.text.secondary, fontSize: 16 }}>
+          Ferramenta não encontrada
+        </Text>
       </LinearGradient>
     );
   }
@@ -27,7 +32,7 @@ export default function MiniAppScreen() {
           headerTitle: app.name,
           headerStyle: { backgroundColor: colors.bg.start },
           headerTintColor: colors.text.primary,
-          headerTitleStyle: { fontWeight: '600' },
+          headerTitleStyle: { fontWeight: "600" },
         }}
       />
       <AppComponent />

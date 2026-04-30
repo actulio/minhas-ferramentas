@@ -1,17 +1,21 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, TextInput, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Search } from 'lucide-react-native';
-import { colors } from '@/theme/colors';
-import { appRegistry } from '@/registry';
-import { categoryLabels, categoryOrder, type AppCategory } from '@/registry/types';
-import { AppCard } from '@/components/AppCard';
-import { CategoryDivider } from '@/components/CategoryDivider';
+import React, { useMemo, useState } from "react";
+import { View, Text, TextInput, ScrollView } from "react-native";
+import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { Search } from "lucide-react-native";
+import { colors } from "@/theme/colors";
+import { appRegistry } from "@/registry";
+import {
+  categoryLabels,
+  categoryOrder,
+  type AppCategory,
+} from "@/registry/types";
+import { AppCard } from "@/components/AppCard";
+import { CategoryDivider } from "@/components/CategoryDivider";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
     if (!search.trim()) return appRegistry;
@@ -39,21 +43,41 @@ export default function HomeScreen() {
     >
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 60, paddingBottom: 32 }}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 60,
+          paddingBottom: 32,
+        }}
       >
         {/* Header */}
-        <Text style={{ fontSize: 28, fontWeight: '700', color: colors.text.primary }}>
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: "700",
+            color: colors.text.primary,
+          }}
+        >
           Minhas Ferramentas
         </Text>
-        <Text style={{ fontSize: 14, color: colors.text.secondary, marginTop: 4, marginBottom: 20 }}>
-          {appRegistry.length} {appRegistry.length === 1 ? 'ferramenta disponível' : 'ferramentas disponíveis'}
+        <Text
+          style={{
+            fontSize: 14,
+            color: colors.text.secondary,
+            marginTop: 4,
+            marginBottom: 20,
+          }}
+        >
+          {appRegistry.length}{" "}
+          {appRegistry.length === 1
+            ? "ferramenta disponível"
+            : "ferramentas disponíveis"}
         </Text>
 
         {/* Search */}
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: "row",
+            alignItems: "center",
             backgroundColor: colors.glass.bg,
             borderWidth: 1,
             borderColor: colors.glass.border,
@@ -69,7 +93,13 @@ export default function HomeScreen() {
             onChangeText={setSearch}
             placeholder="Buscar ferramentas..."
             placeholderTextColor={colors.text.muted}
-            style={{ flex: 1, fontSize: 15, color: colors.text.primary, marginLeft: 10, padding: 0 }}
+            style={{
+              flex: 1,
+              fontSize: 15,
+              color: colors.text.primary,
+              marginLeft: 10,
+              padding: 0,
+            }}
           />
         </View>
 
@@ -95,7 +125,13 @@ export default function HomeScreen() {
         })}
 
         {filtered.length === 0 ? (
-          <Text style={{ color: colors.text.secondary, textAlign: 'center', marginTop: 40 }}>
+          <Text
+            style={{
+              color: colors.text.secondary,
+              textAlign: "center",
+              marginTop: 40,
+            }}
+          >
             Nenhuma ferramenta encontrada.
           </Text>
         ) : null}

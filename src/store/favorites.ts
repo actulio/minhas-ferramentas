@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface FavoritesStore {
   favoriteIds: string[];
@@ -27,7 +27,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
       },
     }),
     {
-      name: 'minhas-ferramentas-favorites',
+      name: "minhas-ferramentas-favorites",
       storage: createJSONStorage(() => AsyncStorage),
     },
   ),

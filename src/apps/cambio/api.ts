@@ -1,9 +1,9 @@
-import { loadJSON, saveJSON } from '@/store/storage';
-import { type ExchangeRates } from './logic';
+import { loadJSON, saveJSON } from "@/store/storage";
+import { type ExchangeRates } from "./logic";
 
-const CACHE_KEY = 'cambio-rates-cache';
+const CACHE_KEY = "cambio-rates-cache";
 const CACHE_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
-const API_URL = 'https://api.exchangerate-api.com/v4/latest/BRL';
+const API_URL = "https://api.exchangerate-api.com/v4/latest/BRL";
 
 interface CachedRates {
   rates: ExchangeRates;
@@ -50,7 +50,7 @@ export async function getRates(forceRefresh = false): Promise<RatesResult> {
     const now = Date.now();
     await saveJSON(CACHE_KEY, { rates, fetchedAt: now });
     return { rates, fetchedAt: new Date(now), isStale: false };
-  } catch (err) {
+  } catch {
     // Fall back to stale cache
     const cached = await loadJSON<CachedRates>(CACHE_KEY);
     if (cached) {
@@ -58,11 +58,13 @@ export async function getRates(forceRefresh = false): Promise<RatesResult> {
         rates: cached.rates,
         fetchedAt: new Date(cached.fetchedAt),
         isStale: true,
-        error: 'Usando cotações em cache. Não foi possível atualizar.',
+        error: "Usando cotações em cache. Não foi possível atualizar.",
       };
     }
 
     // No cache at all
-    throw new Error('Não foi possível obter as cotações. Verifique sua conexão.');
+    throw new Error(
+      "Não foi possível obter as cotações. Verifique sua conexão.",
+    );
   }
 }

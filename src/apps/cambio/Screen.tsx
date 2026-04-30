@@ -1,28 +1,47 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { ScrollView, View, Text, TextInput, Pressable, ActivityIndicator } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { RefreshCw } from 'lucide-react-native';
-import { colors } from '@/theme/colors';
-import { GlassCard } from '@/components/GlassCard';
-import { useSettingsStore } from '@/store/settings';
-import { getRates } from './api';
-import { convertAll, currencyInfo, foreignCurrencies, type CurrencyCode, type ExchangeRates } from './logic';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { RefreshCw } from "lucide-react-native";
+import { colors } from "@/theme/colors";
+import { GlassCard } from "@/components/GlassCard";
+import { useSettingsStore } from "@/store/settings";
+import { getRates } from "./api";
+import {
+  convertAll,
+  currencyInfo,
+  foreignCurrencies,
+  type CurrencyCode,
+  type ExchangeRates,
+} from "./logic";
 
-const allCurrencies: CurrencyCode[] = ['BRL', ...foreignCurrencies];
+const allCurrencies: CurrencyCode[] = ["BRL", ...foreignCurrencies];
 
 export default function CambioScreen() {
   const defaultCurrency = useSettingsStore((s) =>
-    s.getSetting('cambio', 'defaultCurrency'),
+    s.getSetting("cambio", "defaultCurrency"),
   ) as string;
 
   const [rates, setRates] = useState<ExchangeRates | null>(null);
-  const [ratesInfo, setRatesInfo] = useState<{ fetchedAt: Date; isStale: boolean; error?: string } | null>(null);
+  const [ratesInfo, setRatesInfo] = useState<{
+    fetchedAt: Date;
+    isStale: boolean;
+    error?: string;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Which currency the user is typing in, and the raw text value
-  const [activeCurrency, setActiveCurrency] = useState<CurrencyCode>((defaultCurrency as CurrencyCode) || 'USD');
-  const [activeAmount, setActiveAmount] = useState('');
+  const [activeCurrency, setActiveCurrency] = useState<CurrencyCode>(
+    (defaultCurrency as CurrencyCode) || "USD",
+  );
+  const [activeAmount, setActiveAmount] = useState("");
 
   const fetchRates = useCallback(async (force = false) => {
     setLoading(true);
@@ -30,9 +49,13 @@ export default function CambioScreen() {
     try {
       const result = await getRates(force);
       setRates(result.rates);
-      setRatesInfo({ fetchedAt: result.fetchedAt, isStale: result.isStale, error: result.error });
-    } catch (err: any) {
-      setError(err.message || 'Erro ao buscar cotações');
+      setRatesInfo({
+        fetchedAt: result.fetchedAt,
+        isStale: result.isStale,
+        error: result.error,
+      });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Erro ao buscar cotações");
     } finally {
       setLoading(false);
     }
@@ -55,33 +78,75 @@ export default function CambioScreen() {
   };
 
   const formatTime = (date: Date) =>
-    date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 
   if (loading && !rates) {
     return (
-      <LinearGradient colors={[colors.bg.start, colors.bg.mid, colors.bg.end]} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <LinearGradient
+        colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
         <ActivityIndicator color={colors.accent.start} size="large" />
-        <Text style={{ color: colors.text.secondary, marginTop: 12 }}>Carregando cotações...</Text>
+        <Text style={{ color: colors.text.secondary, marginTop: 12 }}>
+          Carregando cotações...
+        </Text>
       </LinearGradient>
     );
   }
 
   if (error && !rates) {
     return (
-      <LinearGradient colors={[colors.bg.start, colors.bg.mid, colors.bg.end]} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
-        <Text style={{ color: colors.error, fontSize: 16, textAlign: 'center', marginBottom: 16 }}>{error}</Text>
-        <Pressable onPress={() => fetchRates(true)} style={{ backgroundColor: colors.accent.start, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10 }}>
-          <Text style={{ color: '#fff', fontWeight: '600' }}>Tentar novamente</Text>
+      <LinearGradient
+        colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 20,
+        }}
+      >
+        <Text
+          style={{
+            color: colors.error,
+            fontSize: 16,
+            textAlign: "center",
+            marginBottom: 16,
+          }}
+        >
+          {error}
+        </Text>
+        <Pressable
+          onPress={() => fetchRates(true)}
+          style={{
+            backgroundColor: colors.accent.start,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "600" }}>
+            Tentar novamente
+          </Text>
         </Pressable>
       </LinearGradient>
     );
   }
 
   return (
-    <LinearGradient colors={[colors.bg.start, colors.bg.mid, colors.bg.end]} style={{ flex: 1 }}>
+    <LinearGradient
+      colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
+      style={{ flex: 1 }}
+    >
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
         {/* Timestamp + refresh */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 20,
+          }}
+        >
           <View>
             {ratesInfo ? (
               <>
@@ -89,7 +154,13 @@ export default function CambioScreen() {
                   Atualizado em: {formatTime(ratesInfo.fetchedAt)}
                 </Text>
                 {ratesInfo.isStale ? (
-                  <Text style={{ color: colors.warning, fontSize: 11, marginTop: 2 }}>
+                  <Text
+                    style={{
+                      color: colors.warning,
+                      fontSize: 11,
+                      marginTop: 2,
+                    }}
+                  >
                     ⚠ {ratesInfo.error}
                   </Text>
                 ) : null}
@@ -101,7 +172,10 @@ export default function CambioScreen() {
             style={{ padding: 8 }}
             disabled={loading}
           >
-            <RefreshCw color={loading ? colors.text.muted : colors.accent.start} size={20} />
+            <RefreshCw
+              color={loading ? colors.text.muted : colors.accent.start}
+              size={20}
+            />
           </Pressable>
         </View>
 
@@ -112,23 +186,38 @@ export default function CambioScreen() {
           const displayValue = isActive
             ? activeAmount
             : converted
-              ? converted[code].toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-              : '';
+              ? converted[code].toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
+              : "";
 
           return (
             <GlassCard
               key={code}
               style={{
                 marginBottom: 12,
-                flexDirection: 'row',
-                alignItems: 'center',
-                borderColor: isActive ? colors.accent.start : colors.glass.border,
+                flexDirection: "row",
+                alignItems: "center",
+                borderColor: isActive
+                  ? colors.accent.start
+                  : colors.glass.border,
               }}
             >
               <Text style={{ fontSize: 28, marginRight: 12 }}>{info.flag}</Text>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text.primary }}>{code}</Text>
-                <Text style={{ fontSize: 11, color: colors.text.secondary }}>{info.name}</Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "600",
+                    color: colors.text.primary,
+                  }}
+                >
+                  {code}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.text.secondary }}>
+                  {info.name}
+                </Text>
               </View>
               <TextInput
                 value={displayValue}
@@ -142,9 +231,9 @@ export default function CambioScreen() {
                 placeholderTextColor={colors.text.muted}
                 style={{
                   fontSize: 18,
-                  fontWeight: '600',
+                  fontWeight: "600",
                   color: isActive ? colors.accent.start : colors.text.primary,
-                  textAlign: 'right',
+                  textAlign: "right",
                   minWidth: 100,
                   padding: 0,
                 }}
@@ -156,14 +245,33 @@ export default function CambioScreen() {
         {/* Rate reference */}
         {rates ? (
           <GlassCard style={{ marginTop: 8 }}>
-            <Text style={{ fontSize: 13, fontWeight: '600', color: colors.text.accent, marginBottom: 8 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: "600",
+                color: colors.text.accent,
+                marginBottom: 8,
+              }}
+            >
               Cotações (1 unidade = R$)
             </Text>
             {foreignCurrencies.map((code) => (
-              <View key={code} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                <Text style={{ color: colors.text.secondary, fontSize: 13 }}>1 {code}</Text>
+              <View
+                key={code}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={{ color: colors.text.secondary, fontSize: 13 }}>
+                  1 {code}
+                </Text>
                 <Text style={{ color: colors.text.primary, fontSize: 13 }}>
-                  R$ {rates[code].toLocaleString('pt-BR', { minimumFractionDigits: 4 })}
+                  R${" "}
+                  {rates[code].toLocaleString("pt-BR", {
+                    minimumFractionDigits: 4,
+                  })}
                 </Text>
               </View>
             ))}

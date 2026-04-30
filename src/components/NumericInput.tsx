@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, TextInput } from 'react-native';
-import { colors } from '@/theme/colors';
+import React from "react";
+import { View, Text, TextInput } from "react-native";
+import { colors } from "@/theme/colors";
 
 interface NumericInputProps {
   label: string;
@@ -21,13 +21,20 @@ export function NumericInput({
 }: NumericInputProps) {
   return (
     <View style={{ marginBottom: 14 }}>
-      <Text style={{ fontSize: 13, fontWeight: '500', color: colors.text.accent, marginBottom: 6 }}>
+      <Text
+        style={{
+          fontSize: 13,
+          fontWeight: "500",
+          color: colors.text.accent,
+          marginBottom: 6,
+        }}
+      >
         {label}
       </Text>
       <View
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
+          flexDirection: "row",
+          alignItems: "center",
           backgroundColor: colors.glass.bg,
           borderWidth: 1,
           borderColor: error ? colors.error : colors.glass.border,
@@ -50,7 +57,13 @@ export function NumericInput({
           }}
         />
         {suffix ? (
-          <Text style={{ fontSize: 14, color: colors.text.secondary, marginLeft: 8 }}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: colors.text.secondary,
+              marginLeft: 8,
+            }}
+          >
             {suffix}
           </Text>
         ) : null}

@@ -1,16 +1,23 @@
-export type CurrencyCode = 'USD' | 'EUR' | 'CHF' | 'BRL';
+export type CurrencyCode = "USD" | "EUR" | "CHF" | "BRL";
 
 // Rates are stored as "1 foreign currency = X BRL"
-export type ExchangeRates = Record<'USD' | 'EUR' | 'CHF', number>;
+export type ExchangeRates = Record<"USD" | "EUR" | "CHF", number>;
 
-export const currencyInfo: Record<CurrencyCode, { name: string; flag: string }> = {
-  USD: { name: 'Dólar Americano', flag: '🇺🇸' },
-  EUR: { name: 'Euro', flag: '🇪🇺' },
-  CHF: { name: 'Franco Suíço', flag: '🇨🇭' },
-  BRL: { name: 'Real Brasileiro', flag: '🇧🇷' },
+export const currencyInfo: Record<
+  CurrencyCode,
+  { name: string; flag: string }
+> = {
+  USD: { name: "Dólar Americano", flag: "🇺🇸" },
+  EUR: { name: "Euro", flag: "🇪🇺" },
+  CHF: { name: "Franco Suíço", flag: "🇨🇭" },
+  BRL: { name: "Real Brasileiro", flag: "🇧🇷" },
 };
 
-export const foreignCurrencies: Array<'USD' | 'EUR' | 'CHF'> = ['USD', 'EUR', 'CHF'];
+export const foreignCurrencies: Array<"USD" | "EUR" | "CHF"> = [
+  "USD",
+  "EUR",
+  "CHF",
+];
 
 /**
  * Convert an amount from one currency to another.
@@ -26,14 +33,14 @@ export function convertCurrency(
 
   // Convert to BRL first
   let brlAmount: number;
-  if (from === 'BRL') {
+  if (from === "BRL") {
     brlAmount = amount;
   } else {
     brlAmount = amount * rates[from];
   }
 
   // Convert from BRL to target
-  if (to === 'BRL') return brlAmount;
+  if (to === "BRL") return brlAmount;
   return brlAmount / rates[to];
 }
 
@@ -46,9 +53,9 @@ export function convertAll(
   rates: ExchangeRates,
 ): Record<CurrencyCode, number> {
   return {
-    USD: from === 'USD' ? amount : convertCurrency(amount, from, 'USD', rates),
-    EUR: from === 'EUR' ? amount : convertCurrency(amount, from, 'EUR', rates),
-    CHF: from === 'CHF' ? amount : convertCurrency(amount, from, 'CHF', rates),
-    BRL: from === 'BRL' ? amount : convertCurrency(amount, from, 'BRL', rates),
+    USD: from === "USD" ? amount : convertCurrency(amount, from, "USD", rates),
+    EUR: from === "EUR" ? amount : convertCurrency(amount, from, "EUR", rates),
+    CHF: from === "CHF" ? amount : convertCurrency(amount, from, "CHF", rates),
+    BRL: from === "BRL" ? amount : convertCurrency(amount, from, "BRL", rates),
   };
 }

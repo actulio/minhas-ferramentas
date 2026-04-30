@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { colors } from '@/theme/colors';
+import React from "react";
+import { View, Text } from "react-native";
+import { colors } from "@/theme/colors";
 
 interface CategoryDividerProps {
   label: string;
@@ -12,9 +12,9 @@ export function CategoryDivider({ label }: CategoryDividerProps) {
       <Text
         style={{
           fontSize: 13,
-          fontWeight: '600',
+          fontWeight: "600",
           color: colors.text.accent,
-          textTransform: 'uppercase',
+          textTransform: "uppercase",
           letterSpacing: 1.2,
         }}
       >

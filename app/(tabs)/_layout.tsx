@@ -1,7 +1,7 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { Home, Heart, Settings } from 'lucide-react-native';
-import { colors } from '@/theme/colors';
+import React from "react";
+import { Tabs } from "expo-router";
+import { Home, Heart, Settings } from "lucide-react-native";
+import { colors } from "@/theme/colors";
 
 export default function TabLayout() {
   return (
@@ -9,7 +9,7 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#020617',
+          backgroundColor: "#020617",
           borderTopColor: colors.glass.border,
           borderTopWidth: 1,
           height: 85,
@@ -20,29 +20,31 @@ export default function TabLayout() {
         tabBarInactiveTintColor: colors.text.muted,
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: '500',
+          fontWeight: "500",
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Início',
+          title: "Início",
           tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="favoritos"
         options={{
-          title: 'Favoritos',
+          title: "Favoritos",
           tabBarIcon: ({ color, size }) => <Heart color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="ajustes"
         options={{
-          title: 'Ajustes',
-          tabBarIcon: ({ color, size }) => <Settings color={color} size={size} />,
+          title: "Ajustes",
+          tabBarIcon: ({ color, size }) => (
+            <Settings color={color} size={size} />
+          ),
         }}
       />
     </Tabs>

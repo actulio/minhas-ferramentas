@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, type ViewProps } from 'react-native';
-import { colors } from '@/theme/colors';
+import React from "react";
+import { View, type ViewProps } from "react-native";
+import { colors } from "@/theme/colors";
 
 interface GlassCardProps extends ViewProps {
   children: React.ReactNode;

@@ -10,7 +10,7 @@ export interface PagamentoResults {
   effectiveCostVista: number;
   effectiveCostPrazo: number;
   savings: number;
-  verdict: 'vista' | 'prazo' | 'equal';
+  verdict: "vista" | "prazo" | "equal";
   breakEvenDiscount: number;
 }
 
@@ -22,7 +22,13 @@ export interface PagamentoResults {
  * The effective cost is: installmentPrice - investmentGains - cashback.
  */
 export function compare(inputs: PagamentoInputs): PagamentoResults {
-  const { cashPrice, installmentPrice, installments, monthlyReturn, cashbackRate } = inputs;
+  const {
+    cashPrice,
+    installmentPrice,
+    installments,
+    monthlyReturn,
+    cashbackRate,
+  } = inputs;
 
   // Edge case: zero installments means you must pay cash
   if (installments <= 0) {
@@ -30,7 +36,7 @@ export function compare(inputs: PagamentoInputs): PagamentoResults {
       effectiveCostVista: cashPrice,
       effectiveCostPrazo: installmentPrice,
       savings: installmentPrice - cashPrice,
-      verdict: cashPrice <= installmentPrice ? 'vista' : 'prazo',
+      verdict: cashPrice <= installmentPrice ? "vista" : "prazo",
       breakEvenDiscount: 0,
     };
   }
@@ -57,13 +63,13 @@ export function compare(inputs: PagamentoInputs): PagamentoResults {
   const diff = effectiveCostVista - effectiveCostPrazo;
   const EPSILON = 0.005;
 
-  let verdict: 'vista' | 'prazo' | 'equal';
+  let verdict: "vista" | "prazo" | "equal";
   if (Math.abs(diff) < EPSILON) {
-    verdict = 'equal';
+    verdict = "equal";
   } else if (diff < 0) {
-    verdict = 'vista';
+    verdict = "vista";
   } else {
-    verdict = 'prazo';
+    verdict = "prazo";
   }
 
   const savings = Math.abs(diff);
@@ -93,7 +99,8 @@ export function compare(inputs: PagamentoInputs): PagamentoResults {
       }
     }
     const breakEvenPrice = (lo + hi) / 2;
-    breakEvenDiscount = ((installmentPrice - breakEvenPrice) / installmentPrice) * 100;
+    breakEvenDiscount =
+      ((installmentPrice - breakEvenPrice) / installmentPrice) * 100;
   }
 
   return {

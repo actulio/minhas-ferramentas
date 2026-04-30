@@ -1,11 +1,11 @@
-import { type ComponentType } from 'react';
+import { type ComponentType } from "react";
 
-export type AppCategory = 'financas' | 'utilidades' | 'conversores';
+export type AppCategory = "financas" | "utilidades" | "conversores";
 
 export interface SettingsField {
   key: string;
   label: string;
-  type: 'number' | 'select' | 'toggle';
+  type: "number" | "select" | "toggle";
   defaultValue: number | string | boolean;
   options?: { label: string; value: number | string }[];
 }
@@ -25,13 +25,13 @@ export interface MiniAppConfig {
 }
 
 export const categoryLabels: Record<AppCategory, string> = {
-  financas: 'Finanças',
-  utilidades: 'Utilidades',
-  conversores: 'Conversores',
+  financas: "Finanças",
+  utilidades: "Utilidades",
+  conversores: "Conversores",
 };
 
 export const categoryOrder: AppCategory[] = [
-  'financas',
-  'utilidades',
-  'conversores',
+  "financas",
+  "utilidades",
+  "conversores",
 ];

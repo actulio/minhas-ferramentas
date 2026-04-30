@@ -1,19 +1,23 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { appRegistry } from '@/registry';
-import { type SettingsField } from '@/registry/types';
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { appRegistry } from "@/registry";
+import { type SettingsField } from "@/registry/types";
 
 interface SettingsStore {
   values: Record<string, Record<string, number | string | boolean>>;
   getSetting: (appId: string, key: string) => number | string | boolean;
-  setSetting: (appId: string, key: string, value: number | string | boolean) => void;
+  setSetting: (
+    appId: string,
+    key: string,
+    value: number | string | boolean,
+  ) => void;
 }
 
 function findDefault(appId: string, key: string): number | string | boolean {
   const app = appRegistry.find((a) => a.id === appId);
   const field = app?.settings?.find((s: SettingsField) => s.key === key);
-  return field?.defaultValue ?? '';
+  return field?.defaultValue ?? "";
 }
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -25,7 +29,11 @@ export const useSettingsStore = create<SettingsStore>()(
         return get().values[appId]?.[key] ?? findDefault(appId, key);
       },
 
-      setSetting: (appId: string, key: string, value: number | string | boolean) => {
+      setSetting: (
+        appId: string,
+        key: string,
+        value: number | string | boolean,
+      ) => {
         const current = get().values;
         set({
           values: {
@@ -39,7 +47,7 @@ export const useSettingsStore = create<SettingsStore>()(
       },
     }),
     {
-      name: 'minhas-ferramentas-settings',
+      name: "minhas-ferramentas-settings",
       storage: createJSONStorage(() => AsyncStorage),
     },
   ),
