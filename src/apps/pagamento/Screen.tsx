@@ -1,5 +1,11 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { ScrollView, View, Text, Alert } from "react-native";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import {
+  ScrollView,
+  View,
+  Text,
+  Alert,
+  TextInput as RNTextInput,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable } from "react-native";
 import { Save } from "lucide-react-native";
@@ -26,12 +32,19 @@ export default function PagamentoScreen() {
   const [installmentPrice, setInstallmentPrice] = useState("");
   const [installments, setInstallments] = useState("");
   const [monthlyReturn, setMonthlyReturn] = useState(
-    String(defaultReturn || 0.8),
+    String(defaultReturn || 1),
   );
   const [cashbackRate, setCashbackRate] = useState(
     String(defaultCashback || 1.0),
   );
   const [savedItems, setSavedItems] = useState<SavedComparison[]>([]);
+
+  // Input refs for focus chaining
+  const cashPriceRef = useRef<RNTextInput>(null);
+  const installmentPriceRef = useRef<RNTextInput>(null);
+  const installmentsRef = useRef<RNTextInput>(null);
+  const monthlyReturnRef = useRef<RNTextInput>(null);
+  const cashbackRateRef = useRef<RNTextInput>(null);
 
   // Load saved items on mount
   useEffect(() => {
@@ -45,13 +58,17 @@ export default function PagamentoScreen() {
     await saveJSON(STORAGE_KEY, items);
   }, []);
 
-  const result = useMemo(() => {
+  const parsedInputs = useMemo(() => {
     const cp = parseFloat(cashPrice) || 0;
     const ip = parseFloat(installmentPrice) || 0;
     const inst = parseInt(installments, 10) || 0;
     const mr = (parseFloat(monthlyReturn) || 0) / 100;
     const cb = (parseFloat(cashbackRate) || 0) / 100;
+    return { cp, ip, inst, mr, cb };
+  }, [cashPrice, installmentPrice, installments, monthlyReturn, cashbackRate]);
 
+  const result = useMemo(() => {
+    const { cp, ip, inst, mr, cb } = parsedInputs;
     if (cp <= 0 || ip <= 0 || inst <= 0) return null;
 
     return compare({
@@ -61,7 +78,7 @@ export default function PagamentoScreen() {
       monthlyReturn: mr,
       cashbackRate: cb,
     });
-  }, [cashPrice, installmentPrice, installments, monthlyReturn, cashbackRate]);
+  }, [parsedInputs]);
 
   const handleSave = () => {
     if (!result) return;
@@ -126,7 +143,11 @@ export default function PagamentoScreen() {
       colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
       style={{ flex: 1 }}
     >
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
         {/* Result */}
         {result ? (
           <>
@@ -164,21 +185,27 @@ export default function PagamentoScreen() {
         {/* Inputs */}
         <GlassCard style={{ marginBottom: 16 }}>
           <NumericInput
+            ref={cashPriceRef}
             label="Preço à vista (R$)"
             value={cashPrice}
             onChangeText={setCashPrice}
             placeholder="0,00"
             suffix="R$"
+            returnKeyType="next"
+            onSubmitEditing={() => installmentPriceRef.current?.focus()}
             error={
               parseFloat(cashPrice) < 0 ? "Valor deve ser positivo" : undefined
             }
           />
           <NumericInput
+            ref={installmentPriceRef}
             label="Preço à prazo (R$)"
             value={installmentPrice}
             onChangeText={setInstallmentPrice}
             placeholder="0,00"
             suffix="R$"
+            returnKeyType="next"
+            onSubmitEditing={() => installmentsRef.current?.focus()}
             error={
               parseFloat(installmentPrice) < 0
                 ? "Valor deve ser positivo"
@@ -186,10 +213,13 @@ export default function PagamentoScreen() {
             }
           />
           <NumericInput
+            ref={installmentsRef}
             label="Nº de parcelas"
             value={installments}
             onChangeText={setInstallments}
             placeholder="0"
+            returnKeyType="next"
+            onSubmitEditing={() => monthlyReturnRef.current?.focus()}
             error={
               parseInt(installments, 10) < 0
                 ? "Valor deve ser positivo"
@@ -197,23 +227,31 @@ export default function PagamentoScreen() {
             }
           />
           <NumericInput
+            ref={monthlyReturnRef}
             label="Rendimento mensal (%)"
             value={monthlyReturn}
             onChangeText={setMonthlyReturn}
             placeholder="0,8"
             suffix="%"
+            returnKeyType="next"
+            onSubmitEditing={() => cashbackRateRef.current?.focus()}
           />
           <NumericInput
+            ref={cashbackRateRef}
             label="Cashback à prazo (%)"
             value={cashbackRate}
             onChangeText={setCashbackRate}
             placeholder="1,0"
             suffix="%"
+            returnKeyType="done"
           />
         </GlassCard>
 
         {/* Breakdown */}
-        {result ? (
+        {result ? (() => {
+          const vistaDiscount = parseFloat(installmentPrice) - parseFloat(cashPrice);
+          const prazoRenda = result.investmentGains + result.cashbackAmount;
+          return (
           <GlassCard style={{ marginBottom: 16 }}>
             <Text
               style={{
@@ -225,34 +263,14 @@ export default function PagamentoScreen() {
             >
               Detalhamento
             </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: 6,
-              }}
-            >
-              <Text style={{ color: colors.text.secondary, fontSize: 13 }}>
-                Custo efetivo à vista
-              </Text>
-              <Text style={{ color: colors.text.primary, fontSize: 13 }}>
-                R$ {fmt(result.effectiveCostVista)}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: 6,
-              }}
-            >
-              <Text style={{ color: colors.text.secondary, fontSize: 13 }}>
-                Custo efetivo à prazo
-              </Text>
-              <Text style={{ color: colors.text.primary, fontSize: 13 }}>
-                R$ {fmt(result.effectiveCostPrazo)}
-              </Text>
-            </View>
+            <DetailRow
+              label="Custo efetivo à vista"
+              value={`R$ ${fmt(result.effectiveCostVista)}`}
+            />
+            <DetailRow
+              label="Custo efetivo à prazo"
+              value={`R$ ${fmt(result.effectiveCostPrazo)}`}
+            />
             <View
               style={{
                 height: 1,
@@ -260,18 +278,40 @@ export default function PagamentoScreen() {
                 marginVertical: 8,
               }}
             />
+            <DetailRow
+              label="Desconto à vista"
+              value={`R$ ${fmt(vistaDiscount)}`}
+              valueColor={vistaDiscount > 0 ? colors.success : colors.text.primary}
+            />
+            <DetailRow
+              label="Renda à prazo"
+              value={`R$ ${fmt(prazoRenda)}`}
+              valueColor={prazoRenda > 0 ? colors.success : colors.text.primary}
+            />
+            <DetailRow
+              label="Ganho com investimento"
+              value={`R$ ${fmt(result.investmentGains)}`}
+              indent
+            />
+            <DetailRow
+              label="Cashback recebido"
+              value={`R$ ${fmt(result.cashbackAmount)}`}
+              indent
+            />
             <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text style={{ color: colors.text.secondary, fontSize: 13 }}>
-                Desconto mín. p/ à vista valer
-              </Text>
-              <Text style={{ color: colors.text.primary, fontSize: 13 }}>
-                {fmt(result.breakEvenDiscount)}%
-              </Text>
-            </View>
+              style={{
+                height: 1,
+                backgroundColor: colors.glass.border,
+                marginVertical: 8,
+              }}
+            />
+            <DetailRow
+              label="Desconto mín. p/ à vista valer"
+              value={`${fmt(result.breakEvenDiscount)}%`}
+            />
           </GlassCard>
-        ) : null}
+          );
+        })() : null}
 
         {/* Saved Items */}
         <SavedItems
@@ -281,5 +321,48 @@ export default function PagamentoScreen() {
         />
       </ScrollView>
     </LinearGradient>
+  );
+}
+
+function DetailRow({
+  label,
+  value,
+  valueColor,
+  indent,
+}: {
+  label: string;
+  value: string;
+  valueColor?: string;
+  indent?: boolean;
+}) {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 6,
+        ...(indent ? { paddingLeft: 16 } : {}),
+      }}
+    >
+      <Text
+        style={{
+          color: indent ? colors.text.muted : colors.text.secondary,
+          fontSize: indent ? 12 : 13,
+        }}
+      >
+        {indent ? "└ " : ""}{label}
+      </Text>
+      <Text
+        style={{
+          color: indent
+            ? colors.text.secondary
+            : (valueColor ?? colors.text.primary),
+          fontSize: indent ? 12 : 13,
+          fontWeight: valueColor && !indent ? "600" : "400",
+        }}
+      >
+        {value}
+      </Text>
+    </View>
   );
 }

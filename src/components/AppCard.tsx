@@ -9,6 +9,7 @@ import {
   TrendingUp,
   CreditCard,
   ArrowLeftRight,
+  Heart,
   type LucideProps,
 } from "lucide-react-native";
 import { colors } from "@/theme/colors";
@@ -99,14 +100,11 @@ export function AppCard({
           hitSlop={12}
           style={{ padding: 8 }}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              color: isFavorite ? colors.accent.start : colors.text.muted,
-            }}
-          >
-            {isFavorite ? "♥" : "♡"}
-          </Text>
+          <Heart
+            color={isFavorite ? colors.accent.start : colors.text.muted}
+            size={20}
+            fill={isFavorite ? colors.accent.start : "none"}
+          />
         </Pressable>
       </GlassCard>
     </AnimatedPressable>

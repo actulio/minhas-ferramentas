@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { Heart } from "lucide-react-native";
 import { colors } from "@/theme/colors";
 import { appRegistry } from "@/registry";
 import { useFavoritesStore } from "@/store/favorites";
@@ -42,7 +43,7 @@ export default function FavoritesScreen() {
 
         {favoriteApps.length === 0 ? (
           <View style={{ alignItems: "center", marginTop: 60 }}>
-            <Text style={{ fontSize: 40, marginBottom: 16 }}>♡</Text>
+            <Heart color={colors.text.muted} size={40} style={{ marginBottom: 16 }} />
             <Text
               style={{
                 color: colors.text.secondary,
@@ -50,7 +51,7 @@ export default function FavoritesScreen() {
                 fontSize: 15,
               }}
             >
-              Toque no ♡ em qualquer ferramenta{"\n"}para fixá-la aqui
+              Toque no coração em qualquer ferramenta{"\n"}para fixá-la aqui
             </Text>
           </View>
         ) : (

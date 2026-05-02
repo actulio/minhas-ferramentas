@@ -13,17 +13,25 @@ import {
 import { AppCard } from "@/components/AppCard";
 import { CategoryDivider } from "@/components/CategoryDivider";
 
+/** Strip accents/diacritics for accent-insensitive comparison */
+function normalize(str: string): string {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
 export default function HomeScreen() {
   const router = useRouter();
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
     if (!search.trim()) return appRegistry;
-    const q = search.toLowerCase();
+    const q = normalize(search);
     return appRegistry.filter(
       (app) =>
-        app.name.toLowerCase().includes(q) ||
-        app.description.toLowerCase().includes(q),
+        normalize(app.name).includes(q) ||
+        normalize(app.description).includes(q),
     );
   }, [search]);
 

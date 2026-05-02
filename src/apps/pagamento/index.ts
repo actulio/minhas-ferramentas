@@ -17,7 +17,7 @@ export const pagamentoApp: MiniAppConfig = {
       key: "defaultMonthlyReturn",
       label: "Rendimento mensal padrão (%)",
       type: "number",
-      defaultValue: 0.8,
+      defaultValue: 1,
     },
     {
       key: "defaultCashbackRate",

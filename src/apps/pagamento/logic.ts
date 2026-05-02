@@ -12,6 +12,8 @@ export interface PagamentoResults {
   savings: number;
   verdict: "vista" | "prazo" | "equal";
   breakEvenDiscount: number;
+  investmentGains: number;
+  cashbackAmount: number;
 }
 
 /**
@@ -38,6 +40,8 @@ export function compare(inputs: PagamentoInputs): PagamentoResults {
       savings: installmentPrice - cashPrice,
       verdict: cashPrice <= installmentPrice ? "vista" : "prazo",
       breakEvenDiscount: 0,
+      investmentGains: 0,
+      cashbackAmount: 0,
     };
   }
 
@@ -109,5 +113,7 @@ export function compare(inputs: PagamentoInputs): PagamentoResults {
     savings,
     verdict,
     breakEvenDiscount: Math.max(0, breakEvenDiscount),
+    investmentGains: totalInvestmentGains,
+    cashbackAmount: cashback,
   };
 }
