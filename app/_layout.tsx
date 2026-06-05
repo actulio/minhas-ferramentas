@@ -2,10 +2,7 @@ import "../global.css";
 import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import {
-  ThemeProvider,
-  DarkTheme,
-} from "@react-navigation/native";
+import { ThemeProvider, DarkTheme } from "@react-navigation/native";
 import {
   useFonts,
   Inter_400Regular,

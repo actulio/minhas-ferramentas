@@ -43,7 +43,11 @@ export default function FavoritesScreen() {
 
         {favoriteApps.length === 0 ? (
           <View style={{ alignItems: "center", marginTop: 60 }}>
-            <Heart color={colors.text.muted} size={40} style={{ marginBottom: 16 }} />
+            <Heart
+              color={colors.text.muted}
+              size={40}
+              style={{ marginBottom: 16 }}
+            />
             <Text
               style={{
                 color: colors.text.secondary,

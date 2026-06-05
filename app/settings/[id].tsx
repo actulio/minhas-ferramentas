@@ -5,7 +5,6 @@ import {
   TextInput,
   Switch,
   Pressable,
-  Alert,
   Keyboard,
 } from "react-native";
 import { View } from "react-native";
@@ -94,7 +93,9 @@ function SettingRow({
   }
 
   // number type
-  return <NumberSettingRow appId={appId} field={field} registerSave={registerSave} />;
+  return (
+    <NumberSettingRow appId={appId} field={field} registerSave={registerSave} />
+  );
 }
 
 function NumberSettingRow({
@@ -234,9 +235,7 @@ export default function AppSettingsScreen() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: saved
-                ? colors.success
-                : colors.accent.start,
+              backgroundColor: saved ? colors.success : colors.accent.start,
               paddingVertical: 14,
               borderRadius: 12,
               marginTop: 16,

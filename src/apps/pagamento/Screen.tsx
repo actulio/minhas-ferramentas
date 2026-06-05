@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import {
   ScrollView,
   View,
@@ -248,70 +254,77 @@ export default function PagamentoScreen() {
         </GlassCard>
 
         {/* Breakdown */}
-        {result ? (() => {
-          const vistaDiscount = parseFloat(installmentPrice) - parseFloat(cashPrice);
-          const prazoRenda = result.investmentGains + result.cashbackAmount;
-          return (
-          <GlassCard style={{ marginBottom: 16 }}>
-            <Text
-              style={{
-                fontSize: 13,
-                fontWeight: "600",
-                color: colors.text.accent,
-                marginBottom: 10,
-              }}
-            >
-              Detalhamento
-            </Text>
-            <DetailRow
-              label="Custo efetivo à vista"
-              value={`R$ ${fmt(result.effectiveCostVista)}`}
-            />
-            <DetailRow
-              label="Custo efetivo à prazo"
-              value={`R$ ${fmt(result.effectiveCostPrazo)}`}
-            />
-            <View
-              style={{
-                height: 1,
-                backgroundColor: colors.glass.border,
-                marginVertical: 8,
-              }}
-            />
-            <DetailRow
-              label="Desconto à vista"
-              value={`R$ ${fmt(vistaDiscount)}`}
-              valueColor={vistaDiscount > 0 ? colors.success : colors.text.primary}
-            />
-            <DetailRow
-              label="Renda à prazo"
-              value={`R$ ${fmt(prazoRenda)}`}
-              valueColor={prazoRenda > 0 ? colors.success : colors.text.primary}
-            />
-            <DetailRow
-              label="Ganho com investimento"
-              value={`R$ ${fmt(result.investmentGains)}`}
-              indent
-            />
-            <DetailRow
-              label="Cashback recebido"
-              value={`R$ ${fmt(result.cashbackAmount)}`}
-              indent
-            />
-            <View
-              style={{
-                height: 1,
-                backgroundColor: colors.glass.border,
-                marginVertical: 8,
-              }}
-            />
-            <DetailRow
-              label="Desconto mín. p/ à vista valer"
-              value={`${fmt(result.breakEvenDiscount)}%`}
-            />
-          </GlassCard>
-          );
-        })() : null}
+        {result
+          ? (() => {
+              const vistaDiscount =
+                parseFloat(installmentPrice) - parseFloat(cashPrice);
+              const prazoRenda = result.investmentGains + result.cashbackAmount;
+              return (
+                <GlassCard style={{ marginBottom: 16 }}>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: "600",
+                      color: colors.text.accent,
+                      marginBottom: 10,
+                    }}
+                  >
+                    Detalhamento
+                  </Text>
+                  <DetailRow
+                    label="Custo efetivo à vista"
+                    value={`R$ ${fmt(result.effectiveCostVista)}`}
+                  />
+                  <DetailRow
+                    label="Custo efetivo à prazo"
+                    value={`R$ ${fmt(result.effectiveCostPrazo)}`}
+                  />
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: colors.glass.border,
+                      marginVertical: 8,
+                    }}
+                  />
+                  <DetailRow
+                    label="Desconto à vista"
+                    value={`R$ ${fmt(vistaDiscount)}`}
+                    valueColor={
+                      vistaDiscount > 0 ? colors.success : colors.text.primary
+                    }
+                  />
+                  <DetailRow
+                    label="Renda à prazo"
+                    value={`R$ ${fmt(prazoRenda)}`}
+                    valueColor={
+                      prazoRenda > 0 ? colors.success : colors.text.primary
+                    }
+                  />
+                  <DetailRow
+                    label="Ganho com investimento"
+                    value={`R$ ${fmt(result.investmentGains)}`}
+                    indent
+                  />
+                  <DetailRow
+                    label="Cashback recebido"
+                    value={`R$ ${fmt(result.cashbackAmount)}`}
+                    indent
+                  />
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: colors.glass.border,
+                      marginVertical: 8,
+                    }}
+                  />
+                  <DetailRow
+                    label="Desconto mín. p/ à vista valer"
+                    value={`${fmt(result.breakEvenDiscount)}%`}
+                  />
+                </GlassCard>
+              );
+            })()
+          : null}
 
         {/* Saved Items */}
         <SavedItems
@@ -350,7 +363,8 @@ function DetailRow({
           fontSize: indent ? 12 : 13,
         }}
       >
-        {indent ? "└ " : ""}{label}
+        {indent ? "└ " : ""}
+        {label}
       </Text>
       <Text
         style={{

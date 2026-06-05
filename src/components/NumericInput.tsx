@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TextInput, type TextInput as TextInputType } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  type TextInput as TextInputType,
+  type TextInputProps,
+} from "react-native";
 import { colors } from "@/theme/colors";
 
 interface NumericInputProps {
@@ -9,6 +15,7 @@ interface NumericInputProps {
   placeholder?: string;
   suffix?: string;
   error?: string;
+  keyboardType?: TextInputProps["keyboardType"];
   returnKeyType?: "next" | "done" | "go" | "search" | "send";
   onSubmitEditing?: () => void;
 }
@@ -22,6 +29,7 @@ export const NumericInput = React.forwardRef<TextInputType, NumericInputProps>(
       placeholder,
       suffix,
       error,
+      keyboardType = "decimal-pad",
       returnKeyType,
       onSubmitEditing,
     },
@@ -57,7 +65,7 @@ export const NumericInput = React.forwardRef<TextInputType, NumericInputProps>(
             onChangeText={onChangeText}
             placeholder={placeholder}
             placeholderTextColor={colors.text.muted}
-            keyboardType="decimal-pad"
+            keyboardType={keyboardType}
             returnKeyType={returnKeyType}
             onSubmitEditing={onSubmitEditing}
             blurOnSubmit={!onSubmitEditing}

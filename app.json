@@ -23,7 +23,8 @@
         "backgroundColor": "#020617"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.actulio.minhasferramentas"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "170a5e8b-2abe-4865-9bbb-15900301409d"
+      }
     }
   }
 }
