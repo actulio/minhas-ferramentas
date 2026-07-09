@@ -38,3 +38,13 @@ export function formatDistance(m: number): string {
   if (m < 1000) return `${Math.round(m)} m`;
   return `${(m / 1000).toFixed(1).replace(".", ",")} km`;
 }
+
+/**
+ * Compass heading (0-360) from magnetometer x/y for the waypoint arrow.
+ * Duplicated intentionally so the waypoint app has no cross-app dependency.
+ */
+export function headingFromMagnetometerSafe(x: number, y: number): number {
+  let angle = Math.atan2(y, x) * (180 / Math.PI);
+  if (angle < 0) angle += 360;
+  return angle;
+}

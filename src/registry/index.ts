@@ -7,6 +7,7 @@ import { calculadoraTvApp } from "@/apps/calculadora-tv";
 import { geradorDocumentosApp } from "@/apps/gerador-documentos";
 import { bussolaApp } from "@/apps/bussola";
 import { nivelApp } from "@/apps/nivel";
+import { waypointApp } from "@/apps/waypoint";
 
 export const appRegistry: MiniAppConfig[] = [
   jurosCompostosApp,
@@ -17,4 +18,5 @@ export const appRegistry: MiniAppConfig[] = [
   geradorDocumentosApp,
   bussolaApp,
   nivelApp,
+  waypointApp,
 ];

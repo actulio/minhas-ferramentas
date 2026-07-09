@@ -5,6 +5,7 @@ import {
   formatDistance,
   type Coord,
 } from "./logic";
+import { headingFromMagnetometerSafe } from "./logic";
 
 const origin: Coord = { latitude: 0, longitude: 0 };
 
@@ -43,5 +44,14 @@ describe("formatDistance", () => {
   });
   it("uses km with one decimal above 1km", () => {
     expect(formatDistance(1300)).toBe("1,3 km");
+  });
+});
+
+describe("headingFromMagnetometerSafe", () => {
+  it("returns 90 for +y axis", () => {
+    expect(Math.round(headingFromMagnetometerSafe(0, 1))).toBe(90);
+  });
+  it("normalizes negatives into [0,360)", () => {
+    expect(Math.round(headingFromMagnetometerSafe(0, -1))).toBe(270);
   });
 });
