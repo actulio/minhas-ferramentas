@@ -5,6 +5,7 @@ import { cambioApp } from "@/apps/cambio";
 import { conversorUnidadesApp } from "@/apps/conversor-unidades";
 import { calculadoraTvApp } from "@/apps/calculadora-tv";
 import { geradorDocumentosApp } from "@/apps/gerador-documentos";
+import { bussolaApp } from "@/apps/bussola";
 
 export const appRegistry: MiniAppConfig[] = [
   jurosCompostosApp,
@@ -13,4 +14,5 @@ export const appRegistry: MiniAppConfig[] = [
   conversorUnidadesApp,
   calculadoraTvApp,
   geradorDocumentosApp,
+  bussolaApp,
 ];
