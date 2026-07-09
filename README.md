@@ -1,14 +1,29 @@
 # 🛠️ Minhas Ferramentas
 
-Aplicativo mobile de ferramentas financeiras pessoais, construído com React Native e Expo. Possui uma arquitetura de **plugin registry** que permite adicionar novas mini-apps de forma modular.
+Aplicativo mobile de ferramentas pessoais, construído com React Native e Expo. Possui uma arquitetura de **plugin registry** que permite adicionar novas mini-apps de forma modular.
 
 ## 📱 Mini-Apps Incluídas
 
+### Finanças
 | App | Descrição |
 |-----|-----------|
 | **Juros Compostos** | Calculadora que resolve qualquer variável da fórmula de juros compostos (montante, capital, taxa, período ou frequência) |
 | **À Vista vs À Prazo** | Compara o custo efetivo entre pagar à vista ou parcelado, considerando rendimento de investimentos e cashback |
+
+### Conversores
+| App | Descrição |
+|-----|-----------|
 | **Conversor de Câmbio** | Conversão em tempo real entre BRL, USD, EUR e CHF com cache de cotações |
+| **Conversor de Unidades** | Converte volume, comprimento, **tempo** (segundos, minutos, horas, dias, anos) e **temperatura** (Celsius ↔ Fahrenheit) |
+| **Calculadora de TV** | Distância ideal de visualização a partir do tamanho da TV |
+
+### Utilidades
+| App | Descrição |
+|-----|-----------|
+| **Gerador de Documentos** | Gera CPF/CNPJ válidos para testes |
+| **Bússola** | Aponta para o norte usando o magnetômetro do celular |
+| **Nível** | Nível de bolha usando o acelerômetro do celular |
+| **Waypoint** | Marca um local (GPS) e guia você de volta com uma seta e a distância — acha-carro / acha-trilha, com vários locais nomeados |
 
 ## 🏗️ Arquitetura
 
