@@ -3,9 +3,9 @@ import {
   bearing,
   arrowRotation,
   formatDistance,
+  smoothAngle,
   type Coord,
 } from "./logic";
-import { headingFromMagnetometerSafe } from "./logic";
 
 const origin: Coord = { latitude: 0, longitude: 0 };
 
@@ -47,11 +47,16 @@ describe("formatDistance", () => {
   });
 });
 
-describe("headingFromMagnetometerSafe", () => {
-  it("returns 90 for +y axis", () => {
-    expect(Math.round(headingFromMagnetometerSafe(0, 1))).toBe(90);
+describe("smoothAngle", () => {
+  it("moves partway from prev toward next", () => {
+    expect(smoothAngle(0, 90, 0.5)).toBe(45);
   });
-  it("normalizes negatives into [0,360)", () => {
-    expect(Math.round(headingFromMagnetometerSafe(0, -1))).toBe(270);
+  it("takes the short way across the 0/360 seam", () => {
+    expect(smoothAngle(350, 10, 0.5)).toBe(0);
+  });
+  it("keeps the result within [0,360)", () => {
+    const r = smoothAngle(359, 5, 0.9);
+    expect(r).toBeGreaterThanOrEqual(0);
+    expect(r).toBeLessThan(360);
   });
 });

@@ -1,23 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Magnetometer } from "expo-sensors";
+import * as Location from "expo-location";
 import { colors } from "@/theme/colors";
 import { GlassCard } from "@/components/GlassCard";
-import { headingFromMagnetometer, cardinalPt } from "./logic";
+import { cardinalPt, smoothAngle } from "./logic";
 
 export default function BussolaScreen() {
   const [heading, setHeading] = useState(0);
+  const [trueNorth, setTrueNorth] = useState(false);
+  const [accuracy, setAccuracy] = useState(3);
+  const headingRef = useRef(0);
 
   useEffect(() => {
-    Magnetometer.setUpdateInterval(100);
-    const sub = Magnetometer.addListener(({ x, y }) => {
-      setHeading(headingFromMagnetometer(x, y));
-    });
-    return () => sub.remove();
+    let cancelled = false;
+    let sub: Location.LocationSubscription | null = null;
+    (async () => {
+      // Permission unlocks declination-corrected true north; magnetic north
+      // still works without it, so we subscribe regardless of the answer.
+      await Location.requestForegroundPermissionsAsync();
+      if (cancelled) return;
+      const s = await Location.watchHeadingAsync((data) => {
+        const useTrue = data.trueHeading >= 0;
+        const raw = useTrue ? data.trueHeading : data.magHeading;
+        const next = smoothAngle(headingRef.current, raw, 0.15);
+        headingRef.current = next;
+        setHeading(next);
+        setTrueNorth(useTrue);
+        setAccuracy(data.accuracy);
+      });
+      if (cancelled) {
+        s.remove();
+        return;
+      }
+      sub = s;
+    })();
+    return () => {
+      cancelled = true;
+      sub?.remove();
+    };
   }, []);
 
   const rounded = Math.round(heading);
+  const needsCalibration = accuracy < 2;
 
   return (
     <LinearGradient
@@ -66,8 +91,13 @@ export default function BussolaScreen() {
       </GlassCard>
 
       <Text style={{ marginTop: 16, color: colors.text.muted, fontSize: 12, textAlign: "center" }}>
-        Heading magnético. Longe de metais/ímãs para maior precisão.
+        {trueNorth ? "Norte verdadeiro" : "Norte magnético — permita a localização para o norte verdadeiro"}
       </Text>
+      {needsCalibration && (
+        <Text style={{ marginTop: 8, color: colors.warning, fontSize: 12, textAlign: "center" }}>
+          Bússola descalibrada. Gire o celular em forma de 8 para calibrar.
+        </Text>
+      )}
     </LinearGradient>
   );
 }

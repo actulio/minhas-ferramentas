@@ -1,4 +1,4 @@
-import { anglesFromAccelerometer, isLevel } from "./logic";
+import { anglesFromAccelerometer, isLevel, smooth } from "./logic";
 
 describe("anglesFromAccelerometer", () => {
   it("reports ~0 pitch and roll when flat (z=1)", () => {
@@ -22,5 +22,17 @@ describe("isLevel", () => {
   });
   it("is false outside tolerance", () => {
     expect(isLevel(5, 0, 1)).toBe(false);
+  });
+});
+
+describe("smooth", () => {
+  it("moves partway from prev toward next", () => {
+    expect(smooth(0, 10, 0.5)).toBe(5);
+  });
+  it("stays put when prev equals next", () => {
+    expect(smooth(10, 10, 0.3)).toBe(10);
+  });
+  it("handles negative targets", () => {
+    expect(smooth(0, -8, 0.25)).toBe(-2);
   });
 });

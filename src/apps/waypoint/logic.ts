@@ -40,11 +40,12 @@ export function formatDistance(m: number): string {
 }
 
 /**
- * Compass heading (0-360) from magnetometer x/y for the waypoint arrow.
- * Duplicated intentionally so the waypoint app has no cross-app dependency.
+ * Low-pass smoothing for a heading angle in degrees. Interpolates from `prev`
+ * toward `next` along the SHORTEST path so it never jumps backwards across the
+ * 0/360 seam. Damps device-heading jitter before it drives the arrow.
+ * `alpha` in (0,1]: higher = snappier, lower = smoother.
  */
-export function headingFromMagnetometerSafe(x: number, y: number): number {
-  let angle = Math.atan2(y, x) * (180 / Math.PI);
-  if (angle < 0) angle += 360;
-  return angle;
+export function smoothAngle(prev: number, next: number, alpha = 0.2): number {
+  const diff = ((next - prev + 540) % 360) - 180; // shortest signed delta in (-180, 180]
+  return ((prev + alpha * diff) % 360 + 360) % 360;
 }

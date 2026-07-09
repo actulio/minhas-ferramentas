@@ -1,21 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Accelerometer } from "expo-sensors";
 import { colors } from "@/theme/colors";
 import { GlassCard } from "@/components/GlassCard";
-import { anglesFromAccelerometer, isLevel } from "./logic";
+import { anglesFromAccelerometer, isLevel, smooth } from "./logic";
 
 const RADIUS = 120; // outer circle radius
 const BUBBLE = 40;
 
 export default function NivelScreen() {
   const [angles, setAngles] = useState({ pitch: 0, roll: 0 });
+  const smoothed = useRef({ pitch: 0, roll: 0 });
 
   useEffect(() => {
     Accelerometer.setUpdateInterval(60);
     const sub = Accelerometer.addListener(({ x, y, z }) => {
-      setAngles(anglesFromAccelerometer(x, y, z));
+      const { pitch, roll } = anglesFromAccelerometer(x, y, z);
+      // Low-pass the raw readings so the bubble glides instead of jittering.
+      const next = {
+        pitch: smooth(smoothed.current.pitch, pitch, 0.2),
+        roll: smooth(smoothed.current.roll, roll, 0.2),
+      };
+      smoothed.current = next;
+      setAngles(next);
     });
     return () => sub.remove();
   }, []);

@@ -10,7 +10,6 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { MapPin } from "lucide-react-native";
 import * as Location from "expo-location";
-import { Magnetometer } from "expo-sensors";
 import { colors } from "@/theme/colors";
 import { GlassCard } from "@/components/GlassCard";
 import { loadJSON, saveJSON } from "@/store/storage";
@@ -19,7 +18,7 @@ import {
   bearing,
   arrowRotation,
   formatDistance,
-  headingFromMagnetometerSafe,
+  smoothAngle,
   type Coord,
 } from "./logic";
 import { SavedWaypoints, type Waypoint } from "./SavedWaypoints";
@@ -34,6 +33,7 @@ export default function WaypointScreen() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const watchRef = useRef<Location.LocationSubscription | null>(null);
+  const headingRef = useRef(0);
 
   // Load saved waypoints on mount
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function WaypointScreen() {
   // Request permission + start watching position and heading
   useEffect(() => {
     let cancelled = false;
-    let magSub: { remove: () => void } | null = null;
+    let headSub: Location.LocationSubscription | null = null;
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (cancelled) return;
@@ -63,15 +63,24 @@ export default function WaypointScreen() {
         return;
       }
       watchRef.current = posSub;
-      Magnetometer.setUpdateInterval(120);
-      magSub = Magnetometer.addListener(({ x, y }) => {
-        setHeading(headingFromMagnetometerSafe(x, y));
+      // OS-fused heading (true north when available) keeps the arrow aligned
+      // with real-world bearings; smoothing damps the jitter.
+      const hSub = await Location.watchHeadingAsync((data) => {
+        const raw = data.trueHeading >= 0 ? data.trueHeading : data.magHeading;
+        const next = smoothAngle(headingRef.current, raw, 0.15);
+        headingRef.current = next;
+        setHeading(next);
       });
+      if (cancelled) {
+        hSub.remove();
+        return;
+      }
+      headSub = hSub;
     })();
     return () => {
       cancelled = true;
       watchRef.current?.remove();
-      magSub?.remove();
+      headSub?.remove();
     };
   }, []);
 

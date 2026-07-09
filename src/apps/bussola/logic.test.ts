@@ -1,19 +1,4 @@
-import { headingFromMagnetometer, cardinalPt } from "./logic";
-
-describe("headingFromMagnetometer", () => {
-  it("returns 0 for +x axis", () => {
-    expect(Math.round(headingFromMagnetometer(1, 0))).toBe(0);
-  });
-  it("returns 90 for +y axis", () => {
-    expect(Math.round(headingFromMagnetometer(0, 1))).toBe(90);
-  });
-  it("returns 180 for -x axis", () => {
-    expect(Math.round(headingFromMagnetometer(-1, 0))).toBe(180);
-  });
-  it("returns 270 for -y axis", () => {
-    expect(Math.round(headingFromMagnetometer(0, -1))).toBe(270);
-  });
-});
+import { cardinalPt, smoothAngle } from "./logic";
 
 describe("cardinalPt", () => {
   it("maps cardinal degrees to pt-BR labels", () => {
@@ -25,5 +10,23 @@ describe("cardinalPt", () => {
   });
   it("wraps around near 360", () => {
     expect(cardinalPt(359)).toBe("N");
+  });
+});
+
+describe("smoothAngle", () => {
+  it("moves partway from prev toward next", () => {
+    expect(smoothAngle(0, 90, 0.5)).toBe(45);
+  });
+  it("takes the short way forward across the 0/360 seam (350 -> 10)", () => {
+    // shortest path is +20°, half of that from 350 lands on 0, not on ~180
+    expect(smoothAngle(350, 10, 0.5)).toBe(0);
+  });
+  it("takes the short way backward across the seam (10 -> 350)", () => {
+    expect(smoothAngle(10, 350, 0.5)).toBe(0);
+  });
+  it("keeps the result within [0,360)", () => {
+    const r = smoothAngle(359, 5, 0.9);
+    expect(r).toBeGreaterThanOrEqual(0);
+    expect(r).toBeLessThan(360);
   });
 });

@@ -20,3 +20,12 @@ export function isLevel(
 ): boolean {
   return Math.abs(pitch) <= toleranceDeg && Math.abs(roll) <= toleranceDeg;
 }
+
+/**
+ * Low-pass smoothing for a plain value. Interpolates from `prev` toward `next`.
+ * `alpha` in (0,1]: higher = snappier, lower = smoother. Used to damp raw
+ * sensor jitter before it reaches the UI.
+ */
+export function smooth(prev: number, next: number, alpha = 0.2): number {
+  return prev + alpha * (next - prev);
+}
