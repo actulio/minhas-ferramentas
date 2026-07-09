@@ -56,8 +56,6 @@ export function SegmentedControl({
                 paddingHorizontal: 6,
                 borderRadius: 12,
                 minHeight: wrap ? 46 : undefined,
-                borderWidth: wrap ? 1 : 0,
-                borderColor: isActive ? colors.accent.start : colors.glass.border,
                 backgroundColor: isActive ? colors.accent.start : "transparent",
                 alignItems: "center",
                 justifyContent: "center",
