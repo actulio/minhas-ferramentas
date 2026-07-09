@@ -8,7 +8,6 @@ import {
   parseOunceInput,
   TIME_FACTORS,
   convertTime,
-  type TimeUnit,
 } from "./logic";
 
 describe("Conversor de Unidades - Lógica", () => {

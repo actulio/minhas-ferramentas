@@ -16,7 +16,6 @@ import {
   convertTime,
   cToF,
   fToC,
-  TIME_FACTORS,
   type TimeUnit,
 } from "./logic";
 

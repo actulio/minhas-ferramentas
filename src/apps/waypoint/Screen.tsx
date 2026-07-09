@@ -44,24 +44,32 @@ export default function WaypointScreen() {
 
   // Request permission + start watching position and heading
   useEffect(() => {
+    let cancelled = false;
     let magSub: { remove: () => void } | null = null;
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
+      if (cancelled) return;
       if (status !== "granted") {
         setPermission("denied");
         return;
       }
       setPermission("granted");
-      watchRef.current = await Location.watchPositionAsync(
+      const posSub = await Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 1 },
         (loc) => setCurrent({ latitude: loc.coords.latitude, longitude: loc.coords.longitude }),
       );
+      if (cancelled) {
+        posSub.remove();
+        return;
+      }
+      watchRef.current = posSub;
       Magnetometer.setUpdateInterval(120);
       magSub = Magnetometer.addListener(({ x, y }) => {
         setHeading(headingFromMagnetometerSafe(x, y));
       });
     })();
     return () => {
+      cancelled = true;
       watchRef.current?.remove();
       magSub?.remove();
     };
@@ -91,7 +99,7 @@ export default function WaypointScreen() {
 
   const handleDelete = useCallback(
     (id: string) => {
-      persist(items.filter((i) => i.id !== id));
+      void persist(items.filter((i) => i.id !== id));
       if (activeId === id) setActiveId(null);
     },
     [items, activeId, persist],
