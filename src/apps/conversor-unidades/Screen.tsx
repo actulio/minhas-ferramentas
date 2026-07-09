@@ -195,6 +195,7 @@ export default function ConversorUnidadesScreen() {
           segments={tabs}
           selectedValue={activeTab}
           onSelect={(val) => setActiveTab(val as TabType)}
+          wrap
         />
 
         <GlassCard style={{ marginBottom: 16 }}>
