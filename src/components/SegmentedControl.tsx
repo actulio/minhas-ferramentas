@@ -51,10 +51,15 @@ export function SegmentedControl({
             }}
           >
             <View
+              // Prevent Android view flattening: a pill that mounts inactive
+              // (transparent bg) would otherwise be collapsed, and the rounded
+              // background wouldn't render when it later becomes active.
+              collapsable={false}
               style={{
                 paddingVertical: 10,
                 paddingHorizontal: 6,
                 borderRadius: 12,
+                overflow: "hidden",
                 minHeight: wrap ? 46 : undefined,
                 backgroundColor: isActive ? colors.accent.start : "transparent",
                 alignItems: "center",
