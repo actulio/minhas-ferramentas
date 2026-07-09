@@ -6,6 +6,9 @@ import {
   convertInToCm,
   convertCmToIn,
   parseOunceInput,
+  TIME_FACTORS,
+  convertTime,
+  type TimeUnit,
 } from "./logic";
 
 describe("Conversor de Unidades - Lógica", () => {
@@ -55,5 +58,27 @@ describe("Conversor de Unidades - Lógica", () => {
       expect(convertCmToIn(25.4)).toBeCloseTo(10, 4);
       expect(convertCmToIn(0)).toBe(0);
     });
+  });
+});
+
+describe("convertTime", () => {
+  it("converts seconds to minutes", () => {
+    expect(convertTime(120, "s", "min")).toBe(2);
+  });
+  it("converts hours to seconds", () => {
+    expect(convertTime(1, "h", "s")).toBe(3600);
+  });
+  it("converts days to hours", () => {
+    expect(convertTime(1, "d", "h")).toBe(24);
+  });
+  it("converts years to days (365-day year)", () => {
+    expect(convertTime(2, "ano", "d")).toBe(730);
+  });
+  it("returns the same value when units match", () => {
+    expect(convertTime(5, "min", "min")).toBe(5);
+  });
+  it("exposes seconds as the base factor", () => {
+    expect(TIME_FACTORS.s).toBe(1);
+    expect(TIME_FACTORS.ano).toBe(31_536_000);
   });
 });

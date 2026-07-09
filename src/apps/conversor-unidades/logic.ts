@@ -54,3 +54,25 @@ export function convertInToCm(inch: number): number {
 export function convertCmToIn(cm: number): number {
   return cm / IN_TO_CM;
 }
+
+/**
+ * Time conversion. All factors express one unit in seconds.
+ * 1 ano = 365 dias (aproximação; ignora anos bissextos).
+ */
+export type TimeUnit = "s" | "min" | "h" | "d" | "ano";
+
+export const TIME_FACTORS: Record<TimeUnit, number> = {
+  s: 1,
+  min: 60,
+  h: 3600,
+  d: 86_400,
+  ano: 31_536_000,
+};
+
+export function convertTime(
+  value: number,
+  from: TimeUnit,
+  to: TimeUnit,
+): number {
+  return (value * TIME_FACTORS[from]) / TIME_FACTORS[to];
+}
