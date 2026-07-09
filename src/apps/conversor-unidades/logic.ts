@@ -76,3 +76,12 @@ export function convertTime(
 ): number {
   return (value * TIME_FACTORS[from]) / TIME_FACTORS[to];
 }
+
+/** Temperature conversion: Celsius <-> Fahrenheit. */
+export function cToF(c: number): number {
+  return (c * 9) / 5 + 32;
+}
+
+export function fToC(f: number): number {
+  return ((f - 32) * 5) / 9;
+}

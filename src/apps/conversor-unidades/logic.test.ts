@@ -82,3 +82,21 @@ describe("convertTime", () => {
     expect(TIME_FACTORS.ano).toBe(31_536_000);
   });
 });
+
+import { cToF, fToC } from "./logic";
+
+describe("temperature conversion", () => {
+  it("converts freezing point 0C to 32F", () => {
+    expect(cToF(0)).toBe(32);
+  });
+  it("converts boiling point 100C to 212F", () => {
+    expect(cToF(100)).toBe(212);
+  });
+  it("converts 32F back to 0C", () => {
+    expect(fToC(32)).toBe(0);
+  });
+  it("has -40 as the crossover point", () => {
+    expect(cToF(-40)).toBe(-40);
+    expect(fToC(-40)).toBe(-40);
+  });
+});
