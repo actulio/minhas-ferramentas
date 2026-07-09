@@ -10,6 +10,9 @@ import {
   CreditCard,
   ArrowLeftRight,
   Heart,
+  Compass,
+  Crosshair,
+  MapPin,
   type LucideProps,
 } from "lucide-react-native";
 import { colors } from "@/theme/colors";
@@ -23,6 +26,9 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
   TrendingUp,
   CreditCard,
   ArrowLeftRight,
+  Compass,
+  Crosshair,
+  MapPin,
 };
 
 interface AppCardProps {

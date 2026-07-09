@@ -15,7 +15,10 @@
       "backgroundColor": "#020617"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMotionUsageDescription": "Este app usa os sensores de movimento para a bússola e o nível."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +37,13 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-system-ui"
+      "expo-system-ui",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Este app usa sua localização para marcar pontos e apontar de volta para eles."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
