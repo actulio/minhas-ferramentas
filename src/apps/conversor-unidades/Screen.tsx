@@ -13,18 +13,57 @@ import {
   convertInToCm,
   convertCmToIn,
   parseOunceInput,
+  convertTime,
+  cToF,
+  fToC,
+  TIME_FACTORS,
+  type TimeUnit,
 } from "./logic";
 
-type TabType = "volume" | "ft_m" | "in_cm";
+type TabType = "volume" | "ft_m" | "in_cm" | "tempo" | "temperatura";
 
 const tabs = [
   { label: "Volume", value: "volume" },
   { label: "Pés / Metros", value: "ft_m" },
   { label: "Pol. / Centímetros", value: "in_cm" },
+  { label: "Tempo", value: "tempo" },
+  { label: "Temperatura", value: "temperatura" },
 ];
+
+const timeUnitSegments = [
+  { label: "seg", value: "s" },
+  { label: "min", value: "min" },
+  { label: "h", value: "h" },
+  { label: "dias", value: "d" },
+  { label: "anos", value: "ano" },
+];
+
+const timeUnitLabels: Record<TimeUnit, string> = {
+  s: "Segundos",
+  min: "Minutos",
+  h: "Horas",
+  d: "Dias",
+  ano: "Anos",
+};
+
+const allTimeUnits: TimeUnit[] = ["s", "min", "h", "d", "ano"];
+
+function formatNumber(n: number): string {
+  if (!Number.isFinite(n)) return "—";
+  const rounded = Math.round(n * 1e6) / 1e6;
+  return String(rounded).replace(".", ",");
+}
 
 export default function ConversorUnidadesScreen() {
   const [activeTab, setActiveTab] = useState<TabType>("volume");
+
+  // Tempo: one value + a source unit, converted to all other units
+  const [timeUnit, setTimeUnit] = useState<TimeUnit>("h");
+  const [timeValue, setTimeValue] = useState("");
+
+  // Temperatura: bidirectional C <-> F
+  const [tempActiveField, setTempActiveField] = useState<"c" | "f">("c");
+  const [tempValue, setTempValue] = useState("");
 
   // Keep separate state for each tab so switching tabs doesn't mix values
   const [volumeActiveField, setVolumeActiveField] = useState<"ml" | "oz">("ml");
@@ -117,6 +156,25 @@ export default function ConversorUnidadesScreen() {
       };
     }
   }, [lengthInCmValue, lengthInCmActiveField]);
+
+  const timeResults = useMemo(() => {
+    const parsed = parseFloat(timeValue.replace(",", ".")) || 0;
+    return allTimeUnits
+      .filter((u) => u !== timeUnit)
+      .map((u) => ({
+        unit: u,
+        label: timeUnitLabels[u],
+        value: formatNumber(convertTime(parsed, timeUnit, u)),
+      }));
+  }, [timeValue, timeUnit]);
+
+  const tempValues = useMemo(() => {
+    const parsed = parseFloat(tempValue.replace(",", ".")) || 0;
+    if (tempActiveField === "c") {
+      return { c: tempValue, f: tempValue ? formatNumber(cToF(parsed)) : "" };
+    }
+    return { c: tempValue ? formatNumber(fToC(parsed)) : "", f: tempValue };
+  }, [tempValue, tempActiveField]);
 
   return (
     <LinearGradient
@@ -216,6 +274,87 @@ export default function ConversorUnidadesScreen() {
               />
             </View>
           )}
+
+          {activeTab === "tempo" && (
+            <View>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "500",
+                  color: colors.text.accent,
+                  marginBottom: 8,
+                }}
+              >
+                Unidade de origem:
+              </Text>
+              <SegmentedControl
+                segments={timeUnitSegments}
+                selectedValue={timeUnit}
+                onSelect={(val) => setTimeUnit(val as TimeUnit)}
+              />
+              <NumericInput
+                label={timeUnitLabels[timeUnit]}
+                value={timeValue}
+                onChangeText={setTimeValue}
+                placeholder="0"
+                suffix={timeUnit === "ano" ? "anos" : timeUnit}
+              />
+              <View style={{ marginTop: 4 }}>
+                {timeResults.map((r) => (
+                  <View
+                    key={r.unit}
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      paddingVertical: 6,
+                    }}
+                  >
+                    <Text
+                      style={{ color: colors.text.secondary, fontSize: 14 }}
+                    >
+                      {r.label}
+                    </Text>
+                    <Text
+                      style={{
+                        color: colors.text.primary,
+                        fontSize: 14,
+                        fontWeight: "600",
+                      }}
+                    >
+                      {r.value}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {activeTab === "temperatura" && (
+            <View>
+              <NumericInput
+                label="Celsius (°C)"
+                value={tempValues.c}
+                onChangeText={(text) => {
+                  setTempActiveField("c");
+                  setTempValue(text);
+                }}
+                placeholder="0"
+                suffix="°C"
+                keyboardType="numbers-and-punctuation"
+              />
+              <NumericInput
+                label="Fahrenheit (°F)"
+                value={tempValues.f}
+                onChangeText={(text) => {
+                  setTempActiveField("f");
+                  setTempValue(text);
+                }}
+                placeholder="0"
+                suffix="°F"
+                keyboardType="numbers-and-punctuation"
+              />
+            </View>
+          )}
         </GlassCard>
 
         {/* Informative Helper Card */}
@@ -275,6 +414,38 @@ export default function ConversorUnidadesScreen() {
               </Text>
               <Text style={{ color: colors.text.secondary, fontSize: 13 }}>
                 • 1 cm ≈ 0,3937 in
+              </Text>
+            </View>
+          )}
+          {activeTab === "tempo" && (
+            <View>
+              <Text
+                style={{
+                  color: colors.text.secondary,
+                  fontSize: 13,
+                  marginBottom: 4,
+                }}
+              >
+                • 1 min = 60 s • 1 h = 3600 s • 1 dia = 86.400 s
+              </Text>
+              <Text style={{ color: colors.text.secondary, fontSize: 13 }}>
+                • 1 ano = 365 dias (aproximação)
+              </Text>
+            </View>
+          )}
+          {activeTab === "temperatura" && (
+            <View>
+              <Text
+                style={{
+                  color: colors.text.secondary,
+                  fontSize: 13,
+                  marginBottom: 4,
+                }}
+              >
+                • °F = °C × 9/5 + 32
+              </Text>
+              <Text style={{ color: colors.text.secondary, fontSize: 13 }}>
+                • °C = (°F − 32) × 5/9
               </Text>
             </View>
           )}
