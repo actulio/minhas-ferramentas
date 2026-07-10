@@ -14,6 +14,9 @@ import {
   Crosshair,
   MapPin,
   ShoppingCart,
+  Tv,
+  Ruler,
+  IdCard,
   type LucideProps,
 } from "lucide-react-native";
 import { colors } from "@/theme/colors";
@@ -31,6 +34,9 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
   Crosshair,
   MapPin,
   ShoppingCart,
+  Tv,
+  Ruler,
+  IdCard,
 };
 
 interface AppCardProps {
