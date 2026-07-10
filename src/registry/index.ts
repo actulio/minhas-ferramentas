@@ -5,6 +5,7 @@ import { cambioApp } from "@/apps/cambio";
 import { conversorUnidadesApp } from "@/apps/conversor-unidades";
 import { calculadoraTvApp } from "@/apps/calculadora-tv";
 import { geradorDocumentosApp } from "@/apps/gerador-documentos";
+import { comparadorPrecosApp } from "@/apps/comparador-precos";
 import { bussolaApp } from "@/apps/bussola";
 import { nivelApp } from "@/apps/nivel";
 import { waypointApp } from "@/apps/waypoint";
@@ -16,6 +17,7 @@ export const appRegistry: MiniAppConfig[] = [
   conversorUnidadesApp,
   calculadoraTvApp,
   geradorDocumentosApp,
+  comparadorPrecosApp,
   bussolaApp,
   nivelApp,
   waypointApp,

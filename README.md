@@ -21,6 +21,7 @@ Aplicativo mobile de ferramentas pessoais, construído com React Native e Expo. 
 | App | Descrição |
 |-----|-----------|
 | **Gerador de Documentos** | Gera CPF/CNPJ válidos para testes |
+| **Comparador de Preços** | Compara dois produtos com quantidades/unidades diferentes e mostra qual tem o menor preço por unidade (peso, volume ou contagem) |
 | **Bússola** | Aponta para o norte usando o magnetômetro do celular |
 | **Nível** | Nível de bolha usando o acelerômetro do celular |
 | **Waypoint** | Marca um local (GPS) e guia você de volta com uma seta e a distância — acha-carro / acha-trilha, com vários locais nomeados |
