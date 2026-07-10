@@ -1,5 +1,14 @@
-import React, { useState, useMemo } from "react";
-import { ScrollView, View, Text } from "react-native";
+import React, { useState, useMemo, useRef } from "react";
+import {
+  ScrollView,
+  View,
+  Text,
+  Platform,
+  Keyboard,
+  Pressable,
+  InputAccessoryView,
+  type TextInput,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "@/theme/colors";
 import { NumericInput } from "@/components/NumericInput";
@@ -32,8 +41,54 @@ const baseUnitFor: Record<Dimension, string> = {
   unidade: "un",
 };
 
+// Accessory-view ids for the iOS keyboard toolbar (one per input, in tab order).
+const ACCESSORY = {
+  priceA: "cp-priceA",
+  qtyA: "cp-qtyA",
+  priceB: "cp-priceB",
+  qtyB: "cp-qtyB",
+};
+
 function formatNumber(n: number, decimals = 2): string {
   return n.toFixed(decimals).replace(".", ",");
+}
+
+/**
+ * iOS keyboard toolbar. Numeric keypads on iOS have no return key, so this
+ * provides "Próximo" (advance to the next field) and "Concluído" (dismiss).
+ * Android exposes the return-key action directly, so this renders nothing there.
+ */
+function KeyboardToolbar({ nativeID, onNext }: { nativeID: string; onNext?: () => void }) {
+  if (Platform.OS !== "ios") return null;
+  return (
+    <InputAccessoryView nativeID={nativeID}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          gap: 20,
+          backgroundColor: colors.bg.mid,
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderTopWidth: 1,
+          borderTopColor: colors.glass.border,
+        }}
+      >
+        {onNext ? (
+          <Pressable onPress={onNext} hitSlop={8}>
+            <Text style={{ color: colors.text.accent, fontSize: 16, fontWeight: "600" }}>
+              Próximo
+            </Text>
+          </Pressable>
+        ) : null}
+        <Pressable onPress={() => Keyboard.dismiss()} hitSlop={8}>
+          <Text style={{ color: colors.text.accent, fontSize: 16, fontWeight: "600" }}>
+            Concluído
+          </Text>
+        </Pressable>
+      </View>
+    </InputAccessoryView>
+  );
 }
 
 function ProductFields({
@@ -46,6 +101,13 @@ function ProductFields({
   onQty,
   onUnit,
   highlighted,
+  priceRef,
+  qtyRef,
+  priceAccessoryID,
+  qtyAccessoryID,
+  onPriceSubmit,
+  onQtySubmit,
+  qtyReturnKeyType,
 }: {
   title: string;
   dimension: Dimension;
@@ -56,6 +118,13 @@ function ProductFields({
   onQty: (t: string) => void;
   onUnit: (u: string) => void;
   highlighted: boolean;
+  priceRef: React.RefObject<TextInput | null>;
+  qtyRef: React.RefObject<TextInput | null>;
+  priceAccessoryID: string;
+  qtyAccessoryID: string;
+  onPriceSubmit: () => void;
+  onQtySubmit: () => void;
+  qtyReturnKeyType: "next" | "done";
 }) {
   return (
     <GlassCard
@@ -75,14 +144,33 @@ function ProductFields({
       >
         {title}
       </Text>
-      <NumericInput label="Preço" value={price} onChangeText={onPrice} placeholder="0,00" />
-      <NumericInput
-        label="Quantidade"
-        value={qty}
-        onChangeText={onQty}
-        placeholder="0"
-        suffix={unit}
-      />
+      <View style={{ flexDirection: "row", gap: 12 }}>
+        <View style={{ flex: 1 }}>
+          <NumericInput
+            label="Preço"
+            value={price}
+            onChangeText={onPrice}
+            placeholder="0,00"
+            ref={priceRef}
+            returnKeyType="next"
+            onSubmitEditing={onPriceSubmit}
+            inputAccessoryViewID={priceAccessoryID}
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <NumericInput
+            label="Quantidade"
+            value={qty}
+            onChangeText={onQty}
+            placeholder="0"
+            suffix={unit}
+            ref={qtyRef}
+            returnKeyType={qtyReturnKeyType}
+            onSubmitEditing={onQtySubmit}
+            inputAccessoryViewID={qtyAccessoryID}
+          />
+        </View>
+      </View>
       {dimension !== "unidade" && (
         <SegmentedControl
           segments={unitSegments[dimension]}
@@ -132,6 +220,12 @@ export default function ComparadorPrecosScreen() {
   const [qtyB, setQtyB] = useState("");
   const [unitB, setUnitB] = useState("g");
 
+  // Refs drive keyboard tab order: Preço A → Qtd A → Preço B → Qtd B.
+  const priceARef = useRef<TextInput>(null);
+  const qtyARef = useRef<TextInput>(null);
+  const priceBRef = useRef<TextInput>(null);
+  const qtyBRef = useRef<TextInput>(null);
+
   function handleDimensionChange(val: string) {
     const dim = val as Dimension;
     setDimension(dim);
@@ -162,7 +256,10 @@ export default function ComparadorPrecosScreen() {
 
   return (
     <LinearGradient colors={[colors.bg.start, colors.bg.mid, colors.bg.end]} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text
           style={{
             fontSize: 13,
@@ -191,6 +288,13 @@ export default function ComparadorPrecosScreen() {
           onQty={setQtyA}
           onUnit={setUnitA}
           highlighted={result.winner === "A"}
+          priceRef={priceARef}
+          qtyRef={qtyARef}
+          priceAccessoryID={ACCESSORY.priceA}
+          qtyAccessoryID={ACCESSORY.qtyA}
+          onPriceSubmit={() => qtyARef.current?.focus()}
+          onQtySubmit={() => priceBRef.current?.focus()}
+          qtyReturnKeyType="next"
         />
         <ProductFields
           title="Produto B"
@@ -202,6 +306,13 @@ export default function ComparadorPrecosScreen() {
           onQty={setQtyB}
           onUnit={setUnitB}
           highlighted={result.winner === "B"}
+          priceRef={priceBRef}
+          qtyRef={qtyBRef}
+          priceAccessoryID={ACCESSORY.priceB}
+          qtyAccessoryID={ACCESSORY.qtyB}
+          onPriceSubmit={() => qtyBRef.current?.focus()}
+          onQtySubmit={() => Keyboard.dismiss()}
+          qtyReturnKeyType="done"
         />
 
         {headline ? <ResultDisplay label="Melhor custo-benefício" value={headline} /> : null}
@@ -233,6 +344,12 @@ export default function ComparadorPrecosScreen() {
           </GlassCard>
         ) : null}
       </ScrollView>
+
+      {/* iOS keyboard toolbars (advance / dismiss); no-op on Android */}
+      <KeyboardToolbar nativeID={ACCESSORY.priceA} onNext={() => qtyARef.current?.focus()} />
+      <KeyboardToolbar nativeID={ACCESSORY.qtyA} onNext={() => priceBRef.current?.focus()} />
+      <KeyboardToolbar nativeID={ACCESSORY.priceB} onNext={() => qtyBRef.current?.focus()} />
+      <KeyboardToolbar nativeID={ACCESSORY.qtyB} />
     </LinearGradient>
   );
 }

@@ -18,6 +18,7 @@ interface NumericInputProps {
   keyboardType?: TextInputProps["keyboardType"];
   returnKeyType?: "next" | "done" | "go" | "search" | "send";
   onSubmitEditing?: () => void;
+  inputAccessoryViewID?: string;
 }
 
 export const NumericInput = React.forwardRef<TextInputType, NumericInputProps>(
@@ -32,6 +33,7 @@ export const NumericInput = React.forwardRef<TextInputType, NumericInputProps>(
       keyboardType = "decimal-pad",
       returnKeyType,
       onSubmitEditing,
+      inputAccessoryViewID,
     },
     ref,
   ) {
@@ -69,6 +71,7 @@ export const NumericInput = React.forwardRef<TextInputType, NumericInputProps>(
             returnKeyType={returnKeyType}
             onSubmitEditing={onSubmitEditing}
             blurOnSubmit={!onSubmitEditing}
+            inputAccessoryViewID={inputAccessoryViewID}
             style={{
               flex: 1,
               fontSize: 16,
