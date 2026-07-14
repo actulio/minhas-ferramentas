@@ -30,3 +30,50 @@ export function describeArc(
   const largeArcFlag = sweep > 180 ? 1 : 0;
   return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`;
 }
+
+export const MIN_DB = 30;
+export const MAX_DB = 120;
+export const START_ANGLE = 135;
+export const SWEEP_DEGREES = 270;
+
+// Phone mics aren't calibrated instruments. This fixed offset converts the
+// raw dBFS metering value (roughly -160 silence .. 0 loudest-possible-input)
+// into a rough dB(SPL) estimate so the number lines up with everyday
+// comparisons (quiet room ~30dB, conversation ~60dB, traffic ~85dB).
+const DBFS_TO_SPL_OFFSET = 100;
+
+export function dbfsToSplEstimate(dbfs: number): number {
+  const estimated = dbfs + DBFS_TO_SPL_OFFSET;
+  return Math.max(MIN_DB, Math.min(MAX_DB, estimated));
+}
+
+export function splToArcProgress(db: number): number {
+  const clamped = Math.max(MIN_DB, Math.min(MAX_DB, db));
+  return (clamped - MIN_DB) / (MAX_DB - MIN_DB);
+}
+
+export type NoiseZone = "calmo" | "moderado" | "alto";
+
+export function splToZone(db: number): NoiseZone {
+  if (db < 60) return "calmo";
+  if (db < 85) return "moderado";
+  return "alto";
+}
+
+/** Low-pass smoothing, same shape as the one used in bussola/nivel. */
+export function smooth(prev: number, next: number, alpha = 0.2): number {
+  return prev + alpha * (next - prev);
+}
+
+export interface ReferencePoint {
+  db: number;
+  label: string;
+}
+
+/** Ticks shown on the gauge so the number can be compared to everyday sounds. */
+export const REFERENCE_POINTS: ReferencePoint[] = [
+  { db: 30, label: "Silêncio" },
+  { db: 60, label: "Conversa" },
+  { db: 85, label: "Trânsito" },
+  { db: 100, label: "Risco" },
+];
