@@ -62,7 +62,10 @@ export default function DecibelimetroScreen() {
         setPermission("denied");
         return;
       }
-      await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: true });
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+        allowsRecording: true,
+      });
       if (cancelled) return;
       setPermission("granted");
       await recorder.prepareToRecordAsync();
@@ -91,9 +94,20 @@ export default function DecibelimetroScreen() {
     return (
       <LinearGradient
         colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
-        style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 24 }}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 24,
+        }}
       >
-        <Text style={{ color: colors.text.primary, fontSize: 16, textAlign: "center" }}>
+        <Text
+          style={{
+            color: colors.text.primary,
+            fontSize: 16,
+            textAlign: "center",
+          }}
+        >
           O decibelímetro não é suportado no navegador. Abra o app no celular
           para medir o ruído ambiente.
         </Text>
@@ -105,7 +119,12 @@ export default function DecibelimetroScreen() {
     return (
       <LinearGradient
         colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
-        style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 24 }}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 24,
+        }}
       >
         <Text
           style={{
@@ -130,7 +149,9 @@ export default function DecibelimetroScreen() {
             borderRadius: 12,
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "600" }}>Tentar novamente</Text>
+          <Text style={{ color: "#fff", fontWeight: "600" }}>
+            Tentar novamente
+          </Text>
         </Pressable>
       </LinearGradient>
     );
@@ -146,14 +167,32 @@ export default function DecibelimetroScreen() {
     START_ANGLE,
     START_ANGLE + SWEEP_DEGREES,
   );
-  const progressPath = describeArc(CENTER, CENTER, RADIUS, START_ANGLE, endAngle);
+  const progressPath = describeArc(
+    CENTER,
+    CENTER,
+    RADIUS,
+    START_ANGLE,
+    endAngle,
+  );
 
   return (
     <LinearGradient
       colors={[colors.bg.start, colors.bg.mid, colors.bg.end]}
-      style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20 }}
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+      }}
     >
-      <View style={{ width: SIZE, height: SIZE, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          width: SIZE,
+          height: SIZE,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Svg width={SIZE} height={SIZE} style={{ position: "absolute" }}>
           <Path
             d={trackPath}
@@ -173,7 +212,12 @@ export default function DecibelimetroScreen() {
 
         {REFERENCE_POINTS.map((ref) => {
           const angle = START_ANGLE + SWEEP_DEGREES * splToArcProgress(ref.db);
-          const point = polarToCartesian(CENTER, CENTER, RADIUS + STROKE_WIDTH, angle);
+          const point = polarToCartesian(
+            CENTER,
+            CENTER,
+            RADIUS + STROKE_WIDTH,
+            angle,
+          );
           return (
             <Text
               key={ref.db}
@@ -192,16 +236,30 @@ export default function DecibelimetroScreen() {
           );
         })}
 
-        <Text style={{ fontSize: 48, fontWeight: "700", color: colors.text.primary }}>
+        <Text
+          style={{
+            fontSize: 48,
+            fontWeight: "700",
+            color: colors.text.primary,
+          }}
+        >
           {Math.round(db)}
         </Text>
-        <Text style={{ fontSize: 14, color: colors.text.secondary, marginTop: 2 }}>
+        <Text
+          style={{ fontSize: 14, color: colors.text.secondary, marginTop: 2 }}
+        >
           dB (estimado)
         </Text>
       </View>
 
       <GlassCard style={{ marginTop: 24, maxWidth: 280 }}>
-        <Text style={{ fontSize: 12, color: colors.text.muted, textAlign: "center" }}>
+        <Text
+          style={{
+            fontSize: 12,
+            color: colors.text.muted,
+            textAlign: "center",
+          }}
+        >
           Estimativa baseada no microfone do celular. Não substitui um medidor
           de SPL calibrado.
         </Text>
