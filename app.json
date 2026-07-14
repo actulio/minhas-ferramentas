@@ -43,6 +43,12 @@
         {
           "locationWhenInUsePermission": "Este app usa sua localização para marcar pontos e apontar de volta para eles."
         }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Este app usa o microfone para estimar o nível de ruído ambiente."
+        }
       ]
     ],
     "experiments": {
