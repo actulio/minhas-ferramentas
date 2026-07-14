@@ -37,10 +37,12 @@ export const START_ANGLE = 135;
 export const SWEEP_DEGREES = 270;
 
 // Phone mics aren't calibrated instruments. This fixed offset converts the
-// raw dBFS metering value (roughly -160 silence .. 0 loudest-possible-input)
-// into a rough dB(SPL) estimate so the number lines up with everyday
-// comparisons (quiet room ~30dB, conversation ~60dB, traffic ~85dB).
-const DBFS_TO_SPL_OFFSET = 100;
+// raw dBFS metering value into a rough dB(SPL) estimate so the number lines
+// up with everyday comparisons (quiet room ~30dB, conversation ~60dB,
+// traffic ~85dB). Calibrated against a reference SPL-meter app on-device:
+// silence measured -40 dBFS / reference 50dB, conversation measured -25 dBFS
+// / reference 65dB — both fit a +90 offset exactly (same 1:1 slope).
+const DBFS_TO_SPL_OFFSET = 90;
 
 export function dbfsToSplEstimate(dbfs: number): number {
   const estimated = dbfs + DBFS_TO_SPL_OFFSET;

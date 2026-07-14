@@ -59,13 +59,13 @@ describe("dbfsToSplEstimate", () => {
   });
 
   it("maps 0 dBFS (loudest possible input) using the fixed offset", () => {
-    // 0 dBFS + the 100dB offset = 100. MAX_DB (120) is a safety ceiling for
+    // 0 dBFS + the 90dB offset = 90. MAX_DB (120) is a safety ceiling for
     // clamping outliers, not something 0 dBFS reaches on its own.
-    expect(dbfsToSplEstimate(0)).toBe(100);
+    expect(dbfsToSplEstimate(0)).toBe(90);
   });
 
   it("applies the fixed offset for a mid-range value", () => {
-    expect(dbfsToSplEstimate(-40)).toBe(60);
+    expect(dbfsToSplEstimate(-40)).toBe(50);
   });
 });
 
