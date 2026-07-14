@@ -63,8 +63,13 @@ export default function DecibelimetroScreen() {
         return;
       }
       await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: true });
+      if (cancelled) return;
       setPermission("granted");
       await recorder.prepareToRecordAsync();
+      if (cancelled) {
+        recorder.stop().catch(() => {});
+        return;
+      }
       recorder.record();
     })();
     return () => {
