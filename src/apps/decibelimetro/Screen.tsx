@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Pressable, Platform } from "react-native";
+import { View, Text, Pressable, Platform, Linking } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
 import {
@@ -51,6 +51,28 @@ export default function DecibelimetroScreen() {
   const recorder = useAudioRecorder(recordingOptions);
   const recorderState = useAudioRecorderState(recorder, POLL_INTERVAL_MS);
 
+  // Starts metering-enabled recording. `isCancelled` lets callers that can be
+  // interrupted (the mount effect, on unmount) bail out between awaits; the
+  // try/catch keeps callers that can't be interrupted (the retry/settings
+  // button) from crashing if the recorder is no longer usable.
+  const startMetering = async (isCancelled?: () => boolean) => {
+    try {
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+        allowsRecording: true,
+      });
+      if (isCancelled?.()) return;
+      await recorder.prepareToRecordAsync();
+      if (isCancelled?.()) {
+        recorder.stop().catch(() => {});
+        return;
+      }
+      recorder.record();
+    } catch {
+      // Ignore: e.g. the screen was unmounted or the recorder is unavailable.
+    }
+  };
+
   // Request mic permission and start metering-enabled recording on mount.
   useEffect(() => {
     if (Platform.OS === "web") return;
@@ -62,18 +84,8 @@ export default function DecibelimetroScreen() {
         setPermission("denied");
         return;
       }
-      await setAudioModeAsync({
-        playsInSilentMode: true,
-        allowsRecording: true,
-      });
-      if (cancelled) return;
       setPermission("granted");
-      await recorder.prepareToRecordAsync();
-      if (cancelled) {
-        recorder.stop().catch(() => {});
-        return;
-      }
-      recorder.record();
+      await startMetering(() => cancelled);
     })();
     return () => {
       cancelled = true;
@@ -139,8 +151,16 @@ export default function DecibelimetroScreen() {
         </Text>
         <Pressable
           onPress={async () => {
+            // Once denied, iOS won't re-prompt from requestRecordingPermissionsAsync;
+            // send the user to Settings, then re-check in case they granted it there.
+            Linking.openSettings();
             const status = await AudioModule.requestRecordingPermissionsAsync();
-            setPermission(status.granted ? "granted" : "denied");
+            if (status.granted) {
+              setPermission("granted");
+              await startMetering();
+            } else {
+              setPermission("denied");
+            }
           }}
           style={{
             backgroundColor: colors.accent.start,
@@ -150,7 +170,7 @@ export default function DecibelimetroScreen() {
           }}
         >
           <Text style={{ color: "#fff", fontWeight: "600" }}>
-            Tentar novamente
+            Abrir configurações
           </Text>
         </Pressable>
       </LinearGradient>
