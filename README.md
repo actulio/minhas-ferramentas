@@ -25,6 +25,7 @@ Aplicativo mobile de ferramentas pessoais, construído com React Native e Expo. 
 | **Bússola** | Aponta para o norte usando o magnetômetro do celular |
 | **Nível** | Nível de bolha usando o acelerômetro do celular |
 | **Waypoint** | Marca um local (GPS) e guia você de volta com uma seta e a distância — acha-carro / acha-trilha, com vários locais nomeados |
+| **Decibelímetro** | Estimativa do nível de ruído ambiente usando o microfone do celular, com medidor visual em arco |
 
 ## 🏗️ Arquitetura
 

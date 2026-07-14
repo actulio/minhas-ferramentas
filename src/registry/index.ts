@@ -9,6 +9,7 @@ import { comparadorPrecosApp } from "@/apps/comparador-precos";
 import { bussolaApp } from "@/apps/bussola";
 import { nivelApp } from "@/apps/nivel";
 import { waypointApp } from "@/apps/waypoint";
+import { decibelimetroApp } from "@/apps/decibelimetro";
 
 export const appRegistry: MiniAppConfig[] = [
   jurosCompostosApp,
@@ -21,4 +22,5 @@ export const appRegistry: MiniAppConfig[] = [
   bussolaApp,
   nivelApp,
   waypointApp,
+  decibelimetroApp,
 ];

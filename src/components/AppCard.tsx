@@ -17,6 +17,7 @@ import {
   Tv,
   Ruler,
   IdCard,
+  Volume2,
   type LucideProps,
 } from "lucide-react-native";
 import { colors } from "@/theme/colors";
@@ -37,6 +38,7 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
   Tv,
   Ruler,
   IdCard,
+  Volume2,
 };
 
 interface AppCardProps {
