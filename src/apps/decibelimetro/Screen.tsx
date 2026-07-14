@@ -27,7 +27,8 @@ import {
 
 const RADIUS = 130;
 const STROKE_WIDTH = 16;
-const SIZE = RADIUS * 2 + STROKE_WIDTH * 2;
+const LABEL_RADIUS = RADIUS + STROKE_WIDTH / 2 + 22;
+const SIZE = LABEL_RADIUS * 2 + 40;
 const CENTER = SIZE / 2;
 const POLL_INTERVAL_MS = 120;
 
@@ -232,12 +233,7 @@ export default function DecibelimetroScreen() {
 
         {REFERENCE_POINTS.map((ref) => {
           const angle = START_ANGLE + SWEEP_DEGREES * splToArcProgress(ref.db);
-          const point = polarToCartesian(
-            CENTER,
-            CENTER,
-            RADIUS + STROKE_WIDTH,
-            angle,
-          );
+          const point = polarToCartesian(CENTER, CENTER, LABEL_RADIUS, angle);
           return (
             <Text
               key={ref.db}
